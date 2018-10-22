@@ -1,0 +1,804 @@
+1e-4, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 67.33%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.71%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.49%
+
+1e-4, fix=3, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 62.83%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.75%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.35%
+
+1e-4, fix=0, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 50.36%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 53.53%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 46.95%
+
+1e-3, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 58.98%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 63.90%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 52.86%
+
+1e-3, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 63.04%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.60%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 53.44%
+
+1e-4, fix=0, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 58.48%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 61.82%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 54.21%
+
+1e-4, fix=0, 300k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 73.38%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.28%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.15%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.98%
+
+1e-3, fix=1, 300k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 73.01%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 63.77%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.02%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 55.64%
+
+1e-4-3, fix=0, 100k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 64.92%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 59.57%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 63.11%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 54.17%
+
+1e-4-3, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 58.81%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 62.21%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 53.42%
+
+1e-4-3, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 66.97%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.67%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.24%
+
+1e-4-3, fix=0, 200k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 76.16%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 67.72%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 71.42%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.53%
+
+1e-4-3, fix=0, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.58%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.91%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.36%
+
+1e-4-3, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.00%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.04%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.84%
+
+1e-4-3, fix=0, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.08%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.03%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.55%
+
+1e-4-3, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.32%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.92%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.83%
+
+1e-4-3, fix=1, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.09%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.40%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.40%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.53%
+
+1e-4-3, fix=0, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.33%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.61%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.10%
+
+1e-4-3, fix=0, 2nd, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.21%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.20%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.73%
+
+1e-4-3, fix=1, 2nd, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.85%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.79%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.57%
+
+1e-4-3, fix=1, 2nd, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.88%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.11%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.18%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.51%
+
+1e-4-3, fix=0, 2nd, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.89%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.52%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.48%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.89%
+
+1e-4-3 all, fix=0, 100k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 58.25%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 54.77%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 60.58%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 48.16%
+
+1e-4-3 all, fix=1, 100k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 57.70%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 54.02%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 58.94%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 48.89%
+
+1e-4-3 all, fix=0, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.73%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.36%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.17%
+
+1e-4-3 all, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.09%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 69.14%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.11%
+
+1e-4-3 all, fix=0, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.45%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.52%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 58.06%
+
+1e-4-3 all, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 67.09%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 71.50%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.20%
+
+1e-4-3 all, fix=1, 400k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 78.40%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 68.35%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.76%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.90%
+
+1e-4-3 all, fix=0, 400k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 80.26%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.64%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.71%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.40%
+
+1e-4-3 all, fix=0, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 81.21%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.79%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.63%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.18%
+
+1e-4-3 all, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.59%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.97%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.92%
+
+1e-4-3 all 2nd 360k, fix=1, 400k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 81.54%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.71%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.62%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.34%
+
+1e-4-3 all 2nd 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.58%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.83%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.48%
+
+1e-4-3 all keep, fix=0, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 68.37%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.74%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.10%
+
+1e-4-3 all keep, fix=0, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 81.38%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.81%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.01%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.53%
+
+1e-4-3 all 2nd 360k, fix=0, 400k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 81.00%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.83%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.17%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.46%
+
+1e-4-3 all 2nd 360k, fix=0, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 81.96%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.11%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.14%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.50%
+
+1e-4-3 all 3rd 480k, fix=1, 500k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.72%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.19%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.44%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.30%
+
+1e-4-3 all 3rd 480k, fix=1, 600k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.83%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.33%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.10%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.10%
+
+1e-4-3 all 2nd 360k, fix=1, 600k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 83.42%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.65%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.65%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.75%
+
+1e-4-3 all 2nd 240k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 49.82%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 54.76%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 44.40%
+
+1e-4-3 all 2nd 240k, fix=1, 200k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 66.33%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 60.16%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.06%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 52.15%
+
+1e-4-3 all 2nd 240k, fix=1, 300k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 74.70%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 66.57%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 71.89%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.18%
+
+1e-4-3 all 2nd 240k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 68.27%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.48%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.22%
+
+1e-4-3 all 2nd 240k, fix=1, 240k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 62.86%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.96%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 56.96%
+
+1e-4-3 all 5f 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 63.58%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 65.53%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 59.43%
+
+1e-4-3 all 2nd 240k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.20%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.54%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.51%
+
+1e-4-3 all 5f 360k, fix=1, 200k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 73.51%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 66.63%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.14%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.39%
+
+1e-4-3 all 2nd 240k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.52%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.30%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.39%
+
+1e-4-3 all 5f 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.32%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.19%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.00%
+
+1e-4-3 all 5f_1, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 60.30%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 62.75%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.11%
+
+1e-4-3 all 5f_1, fix=1, 200k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 72.51%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 66.23%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 69.14%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.18%
+
+1e-4-3 all 5f 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.68%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.36%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.38%
+
+1e-4-3 all 5f_1, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.96%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.65%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.28%
+
+1e-4-3 all 5f 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.62%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.83%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.63%
+
+1e-4-3 all 5f keep, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.49%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.52%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.65%
+
+1e-4-3 all 5f_1, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.29%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.08%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.93%
+
+1e-4-3 all 5f keep, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.61%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.07%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.42%
+
+1e-4-3 all 5f 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.55%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.97%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-4-3 all 5f_1, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.04%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.18%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.59%
+
+1e-4-3 all 5f keep, fix=1, 600k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 84.55%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.78%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.61%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.65%
+
+1e-4-3 all 5f_1, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.44%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.68%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.57%
+
+1e-4-3 all 5f 360k, fix=1, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.07%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.06%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.30%
+
+1e-4-3 all 7f 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.04%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.63%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 59.86%
+
+1e-4-3 all 10f 360k, fix=1, 100k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 64.52%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 61.12%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 64.43%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 56.64%
+
+1e-4-3 all 5f random init 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 61.68%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 63.44%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.82%
+
+1e-4-3 all 7f 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 65.84%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.85%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 59.16%
+
+1e-4-3 all 10f 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 65.49%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.16%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.27%
+
+1e-4-3 all 5f random init 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 68.41%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.26%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.30%
+
+1e-4-3 all 7f 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.75%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.62%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.48%
+
+1e-4-3 all 10f 360k, fix=1, 300k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 78.80%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.20%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.67%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.63%
+
+1e-4-3 all 5f random init 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.65%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.54%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.97%
+
+1e-4-3 all 7f 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.29%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.32%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.42%
+
+1e-4-3 all 10f 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.62%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.25%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.18%
+
+1e-4-3 all 5f random init 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.67%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.24%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.08%
+
+1e-4-3 all 7f 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.04%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.71%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.60%
+
+1e-4-3 all 10f 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.89%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.55%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.24%
+
+1e-4-3 all 5f random init 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.19%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.18%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.95%
+
+1e-4-3 all 5f random init 360k, fix=1, 600k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 84.79%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.62%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.67%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.09%
+
+1e-4-3 all 7f 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.39%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.63%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-4-3 all 10f 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.31%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.46%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.93%
+
+1e-4-3 all 5f mean 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.01%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.59%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 57.86%
+
+1e-4-3 all 5f mean 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.14%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.55%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.28%
+
+1e-4-3 all 5f mean 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.02%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.72%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.71%
+
+1e-4-3 all 7f mean 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.83%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 67.81%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.51%
+
+1e-4-3 all 7f mean 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.46%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.66%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.61%
+
+1e-4-3 all 7f mean 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.20%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.13%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.71%
+
+1e-4-3 all 10f mean 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 64.57%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 68.39%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.22%
+
+1e-4-3 all 10f mean 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 68.30%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 72.74%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.88%
+
+1e-4-3 all 10f mean 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.33%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.50%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.42%
+
+1e-4-3 all 5f mean 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.45%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.72%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.20%
+
+1e-4-3 all 5f mean 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.90%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.50%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.83%
+
+1e-4-3 all 5f mean 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.82%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.32%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.91%
+
+1e-4-3 all 7f mean 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.39%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.22%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.42%
+
+1e-4-3 all 7f mean 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.77%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.22%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.16%
+
+1e-4-3 all 7f mean 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.34%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.76%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.99%
+
+1e-4-3 all 10f mean 360k, fix=1, 400k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 82.83%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.36%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.74%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.93%
+
+1e-4-3 all 10f mean 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.96%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.71%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.65%
+
+1e-4-3 all 10f mean 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.74%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.48%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.56%
+
+1e-4-3 all 7f random init 360k, fix=1, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 63.43%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.87%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 59.45%
+
+1e-4-3 all 10f random init 360k, fix=1, 100k
+[refcoco_unc][train], id[mrcn_cmr_with_st]'s acc is 67.24%
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 63.62%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 66.96%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 59.10%
+
+1e-4-3 all 10f random init 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 67.20%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.99%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 61.33%
+
+1e-4-3 all 7f random init 360k, fix=1, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 67.95%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 71.45%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.34%
+
+1e-4-3 all 7f random init 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.22%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.17%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 62.59%
+
+1e-4-3 all 10f random init 360k, fix=1, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.34%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 74.39%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.16%
+
+1e-4-3 all 10f random init 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.85%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.58%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.32%
+
+1e-4-3 all 7f random init 360k, fix=1, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.12%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.43%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.73%
+
+1e-4-3 all 7f random init 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.05%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.50%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.46%
+
+1e-4-3 all 10f random init 360k, fix=1, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.87%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.64%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.79%
+
+1e-4-3 all 7f random init 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.69%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.47%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.01%
+
+1e-4-3 all 10f random init 360k, fix=1, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.07%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.04%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.46%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, 620k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.49%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.15%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, 635k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.54%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.66%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.99%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 75.07%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.86%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.26%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.77%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 79.05%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.36%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.36%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.45%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.40%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.71%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.84%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.60%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.45%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.19%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.44%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.57%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.43%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.91%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.84%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.82%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.32%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.66%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.63%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.36%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.86%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.58%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.38%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, no detach, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.88%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.03%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.30%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, no detach, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.76%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.88%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.99%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, no detach, 650k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.43%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.73%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.37%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.74%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.65%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.82%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.31%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.73%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.95%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.30%
+
+1e-5 all 7f cap_loss_weight=0.1, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 75.09%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.86%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.50%
+
+1e-5 all 7f cap_loss_weight=0.01, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.87%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.61%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.18%
+
+1e-5 all 7f cap_loss_weight=1, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.60%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.74%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.75%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=1, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.24%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.75%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.75%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=0.1, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 75.06%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.31%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.16%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=0.01, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.39%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.43%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.71%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=1, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.23%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.99%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.38%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=0.1, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 75.36%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.94%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.15%
+
+le-4 for LSTM, dynamic fc, 1e-5 for others, all 7f cap_loss_weight=0.01, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.76%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.49%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.42%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 100k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 56.54%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 58.67%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 53.88%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.1, fix=1, no detach, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.13%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.11%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.69%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.01, fix=1, no detach, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.15%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.91%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.91%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.1, fix=1, no detach, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.88%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.10%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.56%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.01, fix=1, no detach, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.59%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.73%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.36%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 200k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 66.46%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 70.23%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 60.43%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.1, fix=1, no detach, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.97%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.04%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.13%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.01, fix=1, no detach, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.10%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 77.85%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.38%
+
+1e-4-3 all 7f 360k, fix=1, 360k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 70.53%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 75.00%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 63.38%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 300k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 69.80%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 73.71%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 64.12%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 400k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 71.95%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.68%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.91%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.1, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.19%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.24%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.11%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.1, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.27%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.33%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.54%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 500k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.48%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.47%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 66.40%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.01, fix=1, no detach, 700k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 74.15%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.40%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 68.05%
+
+1e-5 all 7f, Mask-RCNN start from 360k, caption model start from 342k, cap_loss_weight=0.01, fix=1, no detach, 800k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 73.99%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 78.12%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 67.36%
+
+le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_loss_weight=0.1, fix=1, no detach, 600k
+[refcoco_unc][val], id[mrcn_cmr_with_st]'s acc is 72.66%
+[refcoco_unc][testA], id[mrcn_cmr_with_st]'s acc is 76.98%
+[refcoco_unc][testB], id[mrcn_cmr_with_st]'s acc is 65.79%
+

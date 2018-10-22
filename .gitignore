@@ -1,0 +1,18 @@
+# models
+caption_log_0/
+output*
+
+fig/
+net_conv/
+
+response/
+result*
+tb*
+
+cache/
+data/
+pyutils/
+
+
+# pyc
+*.pyc
