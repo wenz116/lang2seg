@@ -17,7 +17,7 @@
 ```
 ./experiments/scripts/train_baseline.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
 ```
-`<DATASET> <SPLITBY>: refcoco unc/refcoco+ unc/refcocog umd/refcocog google`
+`<DATASET> <SPLITBY>` pairs contain: refcoco unc/refcoco+ unc/refcocog umd/refcocog google
 
 Output model will be saved at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`.
 
