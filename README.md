@@ -23,13 +23,13 @@ Output model will be saved at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`.
 
 The Mask-RCNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1.py` and `pyutils/mask-faster-rcnn/lib/nets/network.py`.
 
-1. Train the model with spatial dynamic filters:
+2. Train the model with spatial dynamic filters:
 ```
 ./experiments/scripts/train_spatial.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
 ```
 The Mask-RCNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f.py` and `pyutils/mask-faster-rcnn/lib/nets/network_7f.py`.
 
-2. Train the whole model with caption loss:
+3. Train the whole model with caption loss:
 ```
 ./experiments/scripts/train_cycle.sh <GPUID> <DATASET> <SPLITBY> att2in2 <CAPTION_LOSS_WEIGHT>
 ```
