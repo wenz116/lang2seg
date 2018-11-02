@@ -23,7 +23,7 @@ from model.train_val import get_training_roidb, train_net
 from datasets.factory import get_imdb
 from model.config import cfg, cfg_from_file, cfg_from_list
 import datasets.imdb
-from nets.resnet_v1 import resnetv1
+from nets.resnet_v1_7f import resnetv1
 
 # torch
 import torch 

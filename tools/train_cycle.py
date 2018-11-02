@@ -15,11 +15,7 @@ from pprint import pprint
 # model
 import _init_paths
 from loaders.cycle_loader import CycleLoader
-#from layers.joint_match import JointMatching
-#from layers.lang_encoder import RNNEncoder
 import models.utils as model_utils
-#import models.eval_easy_utils as eval_utils
-#from crits.max_margin_crit import MaxMarginCriterion
 from opt_cycle import parse_opt
 import misc.utils as utils
 
@@ -56,14 +52,6 @@ def main(args):
   
   loader = CycleLoader(data_json, data_h5) ####
   
-  # prepare feats
-  #feats_dir = '%s_%s_%s' % (args.net_name, args.imdb_name, args.tag)
-  #head_feats_dir=osp.join('cache/feats', opt['dataset_splitBy'], 'mrcn', feats_dir)
-  #loader.prepare_mrcn(head_feats_dir, args)
-  #ann_feats = osp.join('cache/feats', opt['dataset_splitBy'], 'mrcn', 
-  #                     '%s_%s_%s_ann_feats.h5' % (opt['net_name'], opt['imdb_name'], opt['tag']))
-  #loader.loadFeats({'ann': ann_feats})
-  
   # set up model
   opt['vocab_size']= loader.vocab_size
   #opt['fc7_dim']   = loader.fc7_dim
@@ -94,18 +82,13 @@ def main(args):
   
   
   net = resnetv1(opt, batch_size=opt['batch_size'], num_layers=101) #### determine batch size in opt.py
-  
-  # train set
-  #imdb, roidb = combined_roidb('coco_2014_train_minus_refer_valtest+coco_2014_valminusminival')
-  #imdb, roidb = combined_roidb('refcoco_train+refcoco_val')
-  #print('{:d} roidb entries'.format(len(roidb)))
 
   # output directory where the models are saved
-  output_dir = 'output_1e-4-3_0k_cycle_0.1'
+  output_dir = osp.join(opt['dataset_splitBy'], 'output_{}'.format(opt['output_postfix']))
   print('Output will be saved to `{:s}`'.format(output_dir))
 
   # tensorboard directory where the summaries are saved during training
-  tb_dir = 'tb_1e-4-3_0k_cycle_0.1'
+  tb_dir = osp.join(opt['dataset_splitBy'], 'tb_{}'.format(opt['output_postfix']))
   print('TensorFlow summaries will be saved to `{:s}`'.format(tb_dir))
 
   # also add the validation set, but with no flipping images
@@ -124,7 +107,7 @@ def main(args):
   
   #train_net(net, imdb, roidb, valroidb, output_dir, tb_dir,
   train_net(net, loader, output_dir, tb_dir,
-            pretrained_model='/4TB/ywchen/lang2seg/pyutils/mask-faster-rcnn/output/res101/coco_2014_train_minus_refer_valtest+coco_2014_valminusminival/notime/res101_mask_rcnn_iter_1250000.pth',
+            pretrained_model='pyutils/mask-faster-rcnn/output/res101/coco_2014_train_minus_refer_valtest+coco_2014_valminusminival/notime/res101_mask_rcnn_iter_1250000.pth',
             max_iters=args.max_iters)
 
 

@@ -3,8 +3,9 @@
 GPU_ID=$1
 DATASET=$2
 SPLITBY=$3
-CAPTION_MODEL=$4
-CAPTION_LOSS_WEIGHT=$5
+OUTPUT_POSTFIX=$4
+CAPTION_MODEL=$5
+CAPTION_LOSS_WEIGHT=$6
 
 IMDB="coco_minus_refer"
 ITERS=1250000
@@ -23,8 +24,9 @@ CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/train_cycle.py \
     --tag ${TAG} \
     --dataset ${DATASET} \
     --splitBy ${SPLITBY} \
+    --output_postfix ${OUTPUT_POSTFIX} \
     --caption_model ${CAPTION_MODEL} \
-    --start_from caption_log \
+    --start_from caption_log_res5_2_240k \
     --cap_loss_weight ${CAPTION_LOSS_WEIGHT} \
     --max_iters 800000 \
     --with_st 1 \

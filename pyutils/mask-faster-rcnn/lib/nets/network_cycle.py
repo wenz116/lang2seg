@@ -35,6 +35,9 @@ from scipy.misc import imresize
 from PIL import Image ####
 import os
 
+from model.nms_wrapper import nms
+from model.bbox_transform import bbox_transform_inv
+
 # caption model
 import misc.utils as utils
 
@@ -142,9 +145,20 @@ class Network(nn.Module):
       grid = F.affine_grid(theta, torch.Size((rois.size(0), 1, pre_pool_size, pre_pool_size)))
       crops = F.grid_sample(bottom.expand(rois.size(0), bottom.size(1), bottom.size(2), bottom.size(3)), grid)
       crops = F.max_pool2d(crops, 2, 2)
-    else:
+    else: ####
       grid = F.affine_grid(theta, torch.Size((rois.size(0), 1, cfg.POOLING_SIZE, cfg.POOLING_SIZE)))
       crops = F.grid_sample(bottom.expand(rois.size(0), bottom.size(1), bottom.size(2), bottom.size(3)), grid)
+
+    #print(x1[0].data[0], x2[0].data[0], y1[0].data[0], y2[0].data[0])
+    #for m in range(rois.size(0)):
+    #  if x1[m].data[0] > x2[m].data[0] or y1[m].data[0] > y2[m].data[0]:
+    #    print('------------------')
+    #    print('bottom:', bottom[0,0,:,:]) # (1L, 1024L, 38L, 57L)
+    #    print('rois:', rois[m]) # (256L, 5L)
+    #    print('xyxy:', x1[m].data[0].cpu().numpy(), y1[m].data[0].cpu().numpy(), x2[m].data[0].cpu().numpy(), y2[m].data[0].cpu().numpy())
+    #    print('theta:', theta[m]) # (256L, 2L, 3L)
+    #    print('grid:', grid[m,:,:,0], grid[m,:,:,1]) # (256L, 7L, 7L, 2L)
+    #    print('crops:', crops[m,0,:,:]) # (256L, 1024L, 7L, 7L)
     
     return crops
 
@@ -254,12 +268,14 @@ class Network(nn.Module):
 
     if self._mode == 'TRAIN':
       # produce targets and labels first
-      rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred) # rois, roi_scores are varible
+      rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred) # rois, roi_scores are variable
+      #print('rois 0:', rois) # (1950L, 5L) (1416L, 5L) (2000L, 5L)
       rpn_labels = self._anchor_target_layer(rpn_cls_score)
       # generate proposals (like testing time)
       rois, _ = self._proposal_target_layer(rois, roi_scores)
+      #print('rois 1:', rois) # (256L, 5L)
     else:
-      if cfg.TEST.MODE == 'nms':
+      if cfg.TEST.MODE == 'nms': ####
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred)
       elif cfg.TEST.MODE == 'top':
         rois, _ = self._proposal_top_layer(rpn_cls_prob, rpn_bbox_pred)
@@ -272,6 +288,8 @@ class Network(nn.Module):
     self._predictions['rpn_cls_pred'] = rpn_cls_pred
     self._predictions['rpn_bbox_pred'] = rpn_bbox_pred
     self._predictions['rois'] = rois  # (num_rois, 5) [0xyxy]
+    #print('------------------')
+    #print('rois:', rois) # 256x5
 
     return rois
 
@@ -287,6 +305,8 @@ class Network(nn.Module):
     self._predictions['cls_pred'] = cls_pred
     self._predictions['cls_prob'] = cls_prob
     self._predictions['bbox_pred'] = bbox_pred
+    #print('cls_prob:', cls_prob) # 256x81
+    #print('bbox_pred:', bbox_pred, torch.min(bbox_pred), torch.max(bbox_pred)) # 256x324, about -10~10
 
     return cls_prob, bbox_pred
 
@@ -414,46 +434,67 @@ class Network(nn.Module):
     loss_mask = F.binary_cross_entropy_with_logits(mask_score, mask_targets)
 
     # Caption model, caption loss
-    fc_feats_all = self._predictions['net_conv'].mean(3).mean(2)
-    att_feats_all = F.adaptive_avg_pool2d(self._predictions['net_conv'], [14,14]).permute(0, 2, 3, 1)
+    feats_all = self._head_to_tail(self._predictions['net_conv'])
     
-    #print('net_conv:', self._predictions['net_conv'].size()) # (1L, 1024L, 38L, 50L)
-    #print('fc_feats_all:', fc_feats_all.size()) # (1L, 1024L)
-    #print('att_feats_all:', att_feats_all.size()) # (1L, 14L, 14L, 1024L)
+    fc_feats_all = feats_all.mean(3).mean(2)
+    att_feats_all = F.adaptive_avg_pool2d(feats_all, [14,14]).permute(0, 2, 3, 1).contiguous()
     
-    #print('self._gt_masks 0:', self._gt_masks.shape)
+    #print('feats_all:', feats_all.size()) # (1L, 2048L, 38L, 57L)
+    #print('fc_feats_all:', fc_feats_all.size()) # (1L, 2048L)
+    #print('att_feats_all:', att_feats_all.size()) # (1L, 14L, 14L, 2048L)
     
-    tmp = [self._gt_masks, self._cap_labels, self._cap_masks]
-    tmp = [Variable(torch.from_numpy(_), requires_grad=False).cuda() for _ in tmp]
-    gt_masks, cap_labels, cap_masks = tmp
-    gt_masks = gt_masks.unsqueeze(1).float()
-    #print('gt_masks 0:', gt_masks.size())
+    att_feats_mask = Variable(torch.zeros(1, 14, 14, 2048).cuda())
+    roi_count = Variable(torch.zeros(1, 14, 14, 1).cuda())
     
-    #print('gt_masks 0:', gt_masks.size(), [self._predictions['net_conv'].size(2), self._predictions['net_conv'].size(3)]) # (1, 600, 800)
-    gt_masks = F.adaptive_avg_pool2d(gt_masks,[self._predictions['net_conv'].size(2),self._predictions['net_conv'].size(3)])
-    gt_masks[gt_masks<0.5] = 0
-    gt_masks[gt_masks>=0.5] = 1
+    for roi_num, roi_idx in enumerate(self._pred_rois):
+      r1 = int(round(self._pred_boxes[roi_num][1] / (self._im_info[0][0]-1) * (14-1)))
+      r2 = int(round(self._pred_boxes[roi_num][3] / (self._im_info[0][0]-1) * (14-1)))
+      c1 = int(round(self._pred_boxes[roi_num][0] / (self._im_info[0][1]-1) * (14-1)))
+      c2 = int(round(self._pred_boxes[roi_num][2] / (self._im_info[0][1]-1) * (14-1)))
+      
+      #print('im size:', self._im_info[0][0], self._im_info[0][1], '  box:', self._pred_boxes[1], self._pred_boxes[3], self._pred_boxes[0], self._pred_boxes[2], '  box:', r1, r2, c1, c2)
+      # im size: 600.0 906.0   box: 281.956 399.703 665.458 762.66   box: 6 9 10 11
+      
+      #print('self._spatial_fc7:', self._spatial_fc7.size(), self._spatial_fc7[0:1].size()) # (10L, 2048L, 7L, 7L) (1L, 2048L, 7L, 7L)
+      #print('self._spatial_fc7.requires_grad:', self._spatial_fc7.requires_grad) # True
+      
+      #print('att_feats_mask.requires_grad 0:', att_feats_mask.requires_grad) # False
+      if r1 < r2 and c1 < c2:
+        #print(self._spatial_fc7[roi_idx:roi_idx+1,0,:,:])
+        #print(F.adaptive_avg_pool2d(self._spatial_fc7[roi_idx:roi_idx+1,0,:,:], [r2-r1,c2-c1]))
+        
+        att_feats_mask[:, r1:r2, c1:c2, :] = att_feats_mask[:, r1:r2, c1:c2, :] + F.adaptive_avg_pool2d(self._spatial_fc7[roi_idx:roi_idx+1], [r2-r1,c2-c1]).permute(0, 2, 3, 1).contiguous()
+        roi_count[:, r1:r2, c1:c2, :] = roi_count[:, r1:r2, c1:c2, :] + 1
+      else:
+        print('---------- empty box ----------')
+
+    #print(roi_count.squeeze())
+    roi_count[roi_count == 0] = 1
+    att_feats_mask = att_feats_mask / roi_count
     
-    #print('gt_masks 1:', gt_masks.size())
+    cap_labels = Variable(torch.from_numpy(self._cap_labels).cuda(), requires_grad=False)
+    cap_masks = Variable(torch.from_numpy(self._cap_masks).cuda(), requires_grad=False)
     
-    feats_mask = self._predictions['net_conv'] * gt_masks
-    fc_feats_mask = feats_mask.mean(3).mean(2)
-    att_feats_mask = F.adaptive_avg_pool2d(feats_mask, [14,14]).permute(0, 2, 3, 1)
+    fc_feats_mask = att_feats_mask.mean(2).mean(1)
     
-    #print('feats_mask:', feats_mask.size()) # (1L, 1024L, 38L, 50L)
-    #print('fc_feats_mask:', fc_feats_mask.size()) # (1L, 1024L)
-    #print('att_feats_mask:', att_feats_mask.size()) # (1L, 14L, 14L, 1024L)
+    #print('fc_feats_mask.requires_grad:', fc_feats_mask.requires_grad) # True
+    #print('att_feats_mask.requires_grad:', att_feats_mask.requires_grad) # True
     
-    fc_feats = torch.cat((fc_feats_all, fc_feats_mask), 1)
-    att_feats = torch.cat((att_feats_all, att_feats_mask), 3)
+    #print('fc_feats_mask:', fc_feats_mask.size()) # (1L, 2048L)
+    #print('att_feats_mask:', att_feats_mask.size()) # (1L, 14L, 14L, 2048L)
     
+    fc_feats = torch.cat((fc_feats_all, fc_feats_mask), 1) ####
+    att_feats = torch.cat((att_feats_all, att_feats_mask), 3) ####
+    
+    #print('fc_feats.requires_grad:', fc_feats.requires_grad) # True
+    #print('att_feats.requires_grad:', att_feats.requires_grad) # True
+    
+    #print('fc_feats:', fc_feats.size()) # (1L, 4096L)
+    #print('att_feats:', att_feats.size()) # (1L, 14L, 14L, 4096L)
+    #print('cap_labels:', cap_labels.size()) # (1L, 7L) (1L, 5L)
+    #print('cap_masks:', cap_masks.size()) # (1L, 7L) (1L, 5L)
+    #print('output:', self.caption_model(fc_feats, att_feats, cap_labels).size()) # (1L, 4L, 2000L) (1L, 3L, 2000L)
     #print('---------')
-    #print('fc_feats:', fc_feats.size()) # (1L, 2048L)
-    #print('att_feats:', att_feats.size()) # (1L, 14L, 14L, 2048L)
-    #print('cap_labels:', cap_labels)#.size()) # (1L, 7L) (1L, 5L)
-    #print('cap_masks:', cap_masks)#.size()) # (1L, 7L) (1L, 5L)
-    #print('bounds:', data['bounds']) # {'wrapped': False, 'it_pos_now': 10, 'it_max': 113287}
-    #print('output:', self.caption_model(fc_feats, att_feats, cap_labels))#.size()) # (1L, 4L, 2000L) (1L, 3L, 2000L)
     
     crit = utils.LanguageModelCriterion()
     
@@ -559,8 +600,15 @@ class Network(nn.Module):
     #print('self._batch_size:', self._batch_size)
     #print('net_conv:', net_conv.size())
     #print('dynamic_filter:', dynamic_filter.size())
-    #print('dynamic_filter:', torch.min(dynamic_filter).data.cpu().numpy(), torch.max(dynamic_filter).data.cpu().numpy())
-    #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
+    #print('-----------')
+    #print('dynamic_filter_0:', torch.min(dynamic_filter_0).data.cpu().numpy(), torch.max(dynamic_filter_0).data.cpu().numpy())
+    #print('dynamic_filter_1:', torch.min(dynamic_filter_1).data.cpu().numpy(), torch.max(dynamic_filter_1).data.cpu().numpy())
+    #print('dynamic_filter_2:', torch.min(dynamic_filter_2).data.cpu().numpy(), torch.max(dynamic_filter_2).data.cpu().numpy())
+    #print('dynamic_filter_3:', torch.min(dynamic_filter_3).data.cpu().numpy(), torch.max(dynamic_filter_3).data.cpu().numpy())
+    #print('dynamic_filter_4:', torch.min(dynamic_filter_4).data.cpu().numpy(), torch.max(dynamic_filter_4).data.cpu().numpy())
+    #print('dynamic_filter_5:', torch.min(dynamic_filter_5).data.cpu().numpy(), torch.max(dynamic_filter_5).data.cpu().numpy())
+    #print('dynamic_filter_6:', torch.min(dynamic_filter_6).data.cpu().numpy(), torch.max(dynamic_filter_6).data.cpu().numpy())
+    #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), torch.mean(net_conv).data.cpu().numpy())
     #print('response_filter:', response_filter.size())
     
     response_0 = F.conv2d(net_conv, dynamic_filter_0) ####
@@ -595,11 +643,22 @@ class Network(nn.Module):
     net_conv_6 = net_conv * mask_6
     response_6 = F.conv2d(net_conv_6, dynamic_filter_6) ####
     
+    #print('response_0:', response_0.size(), torch.min(response_0).data.cpu().numpy(), torch.max(response_0).data.cpu().numpy())
+    #print('response_1:', response_1.size(), torch.min(response_1).data.cpu().numpy(), torch.max(response_1).data.cpu().numpy())
+    #print('response_2:', response_2.size(), torch.min(response_2).data.cpu().numpy(), torch.max(response_2).data.cpu().numpy())
+    #print('response_3:', response_3.size(), torch.min(response_3).data.cpu().numpy(), torch.max(response_3).data.cpu().numpy())
+    #print('response_4:', response_4.size(), torch.min(response_4).data.cpu().numpy(), torch.max(response_4).data.cpu().numpy())
+    #print('response_5:', response_5.size(), torch.min(response_5).data.cpu().numpy(), torch.max(response_5).data.cpu().numpy())
+    #print('response_6:', response_6.size(), torch.min(response_6).data.cpu().numpy(), torch.max(response_6).data.cpu().numpy())
+    
     response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
+    #print('response -:', response.size(), torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy())
     response = F.conv2d(response, response_filter)
     net_conv = net_conv * response #### domain of net_conv need to be positive?
     
-    #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
+    #print('response +:', response.size(), torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy())
+    
+    #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), torch.mean(net_conv).data.cpu().numpy())
     
     #dynamic_filter: [-0.18204966] [ 0.16569006]
     #net_conv: ------- [ 0.] [ 34.97955704]
@@ -608,46 +667,6 @@ class Network(nn.Module):
     #print('response:', response.size(), 'net_conv:', net_conv.size())
     #response: (1L, 1L, 38L, 57L) net_conv: (1L, 1024L, 38L, 57L)
     
-    if save:
-      #print(torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy(), '-------------')
-      response_n = (response - torch.min(response)) / (torch.max(response) - torch.min(response))
-      response_n = response_n.data.cpu().numpy()
-      response_n = np.squeeze(response_n, axis=(0, 1))
-      
-      im = Image.fromarray((response_n*255).astype(np.uint8), mode='P')
-      im_dir = 'response'
-      if not os.path.exists(im_dir):
-        os.makedirs(im_dir)
-      im.save('{}/{}_{}.png'.format(im_dir, self._file_name[:-4], self._sent_id))
-    
-    if 0: #save:
-      print(torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), '-------------')
-      channel = torch.sum(net_conv, 3)
-      channel = torch.sum(channel, 2)
-      print(channel)
-      
-      max_idxs = []
-      
-      for _ in range(5):
-        max_idx = np.argmax(channel.data.cpu().numpy())
-        print(max_idx, channel[:, max_idx].data.cpu().numpy())
-        channel[:, max_idx] = 0
-        max_idxs += [max_idx]
-      
-      print(max_idxs, '++++')
-      
-      for ch in max_idxs:
-        #print(ch)
-        net_conv_n = (net_conv[:, ch:ch+1, :, :] - torch.min(net_conv[:, ch:ch+1, :, :])) / (torch.max(net_conv[:, ch:ch+1, :, :]) - torch.min(net_conv[:, ch:ch+1, :, :]))
-        net_conv_n = net_conv_n.data.cpu().numpy()
-        net_conv_n = np.squeeze(net_conv_n, axis=(0, 1))
-        
-        im = Image.fromarray((net_conv_n*255).astype(np.uint8), mode='P')
-        im_dir = 'net_conv'
-        if not os.path.exists(im_dir):
-          os.makedirs(im_dir)
-        im.save('{}/{}_{}_{}.png'.format(im_dir, self._file_name[:-4], self._sent_id, ch))
-    
     # build the anchors for the image
     self._anchor_component(net_conv.size(2), net_conv.size(3))
    
@@ -655,7 +674,7 @@ class Network(nn.Module):
     if cfg.POOLING_MODE == 'crop':
       if cfg.POOLING_ALIGN == True:
         pool5 = self._crop_pool_layer_align(net_conv, rois, self._im_info)
-      else:
+      else: ####
         pool5 = self._crop_pool_layer(net_conv, rois)
     else:
       pool5 = self._roi_pool_layer(net_conv, rois)
@@ -668,18 +687,23 @@ class Network(nn.Module):
     
     spatial_fc7 = self._head_to_tail(pool5)  # (num_rois, 2048, 7, 7)
     cls_prob, bbox_pred = self._region_classification(spatial_fc7)
+    #print('spatial_fc7 0:', spatial_fc7.size()) #(256L, 2048L, 7L, 7L)
+    self._spatial_fc7 = spatial_fc7
 
     if self._mode == 'TRAIN':
       # we only run mask prediction on foreground regions
-      num_fg = self._proposal_targets['mask_targets'].size(0) #### set to 1?
-      spatial_fc7 = spatial_fc7[:num_fg] ####
+      num_fg = self._proposal_targets['mask_targets'].size(0) #### about 1~40 (set to 1?)
+      spatial_fc7 = spatial_fc7[:num_fg] #### in proposal_target_layer.py: keep_inds = torch.cat([fg_inds, bg_inds], 0)
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_fg, num_classes, 14, 14)
+      #print('spatial_fc7 1:', spatial_fc7.size()) #(8L, 2048L, 7L, 7L)
     else:
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_rois, num_classes, 14, 14)
     
     for k in self._predictions.keys():
       self._score_summaries[k] = self._predictions[k]
     
+    #print('----------------------------')
+    #print('self._spatial_fc7:', self._spatial_fc7.size())
     #print('net_conv:', net_conv.size(), 'rois:', rois.size(), 'cls_prob:', cls_prob.size(), 'bbox_pred:', bbox_pred.size(), 'mask_prob:', mask_prob.size())
     #net_conv: (1L, 1024L, 38L, 57L) rois: (256L, 5L) cls_prob: (256L, 81L) bbox_pred: (256L, 324L) mask_prob: (8L, 81L, 14L, 14L)
     return net_conv, rois, cls_prob, bbox_pred, mask_prob
@@ -783,6 +807,84 @@ class Network(nn.Module):
       else:
         self._predictions['bbox_pred'] = bbox_pred
     else:
+      scores, rois = self._predictions['cls_prob'].data.cpu().numpy(), \
+                     self._predictions['rois'].data.cpu().numpy()
+
+      boxes = rois[:, 1:5] # (n, 4)
+      scores = np.reshape(scores, [scores.shape[0], -1]) # (n, C)
+      
+      roi_per_image = 5 ####
+      max_scores = np.amax(scores[:, 1:], axis=1) # (256,)
+      
+      thresh = np.sort(max_scores)[-roi_per_image]
+      pred_roi = np.where(max_scores >= thresh)[0] # (3,)
+      pred_box = boxes[pred_roi]
+      
+      #print('pred_roi:', pred_roi)
+      #print('pred_box:', pred_box) # (3, 4)
+      
+      #from utils.bbox import bbox_overlaps
+      #print(bbox_overlaps(boxes[inds[0]:inds[0]+1,:], boxes[inds[1]:inds[1]+1,:]))
+      #print(bbox_overlaps(boxes[inds[0]:inds[0]+1,:], boxes[inds[2]:inds[2]+1,:]))
+      #print(bbox_overlaps(boxes[inds[1]:inds[1]+1,:], boxes[inds[2]:inds[2]+1,:]))
+      #print(max_scores[inds])
+      
+      #print('boxes:', boxes.shape) # (256, 4)
+      #print('scores:', scores.shape) # (256, 81)
+      
+      """
+      num_fg = self._proposal_targets['mask_targets'].size(0)
+      pred = np.where(scores == np.max(scores[:num_fg,1:]))
+      pred_roi = pred[0][0]
+      pred_class = pred[1][0]
+      pred_box = boxes[pred_roi]
+      """
+      #print('max score:', scores[pred_roi, pred_class])
+      #print('num_fg:', num_fg)
+      #print('pred_roi:', pred_roi, 'pred_class:', pred_class) # pred_roi: 0 pred_class: 1
+      #print('pred_box:', pred_box) # [ 473.3348999   408.42453003  655.91040039  592.13208008]
+      #print('--------')
+      
+      """
+      all_boxes = [[] for _ in range(81)]
+      max_per_image = 100
+      thresh = 0.
+
+      # skip j = 0, because it's the background class
+      for j in range(1, 81):
+        inds = np.where(scores[:, j] > thresh)[0]
+        cls_scores = scores[inds, j] ####
+        cls_boxes = pred_boxes[inds, j*4:(j+1)*4]
+        cls_dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])) \
+          .astype(np.float32, copy=False)
+        keep = nms(torch.from_numpy(cls_dets), cfg.TEST.NMS).numpy() if cls_dets.size > 0 else []
+        cls_dets = cls_dets[keep, :]
+        all_boxes[j] = cls_dets
+
+      # Limit to max_per_image detections *over all classes*
+      if max_per_image > 0:
+        image_scores = np.hstack([all_boxes[j][:, -1]
+                      for j in range(1, 81)])
+        ##print('--------')
+        if len(image_scores) > max_per_image:
+          image_thresh = np.sort(image_scores)[-max_per_image]
+          image_highest = np.max(image_scores)
+          
+          for j in range(1, 81):
+            keep = np.where(all_boxes[j][:, -1] >= image_thresh)[0]
+            all_boxes[j] = all_boxes[j][keep, :] # choose largest 100 boxes for image i
+            
+            for k in range(len(all_boxes[j])):
+              if all_boxes[j][k, -1] >= image_highest:
+                pred_box = all_boxes[j][k][:4]
+                pred_class = j
+                #print('perd_score:', j, k, all_boxes[j][k][-1])
+                print('pred_box:', pred_box, 'pred_class:', pred_class)
+      """
+      
+      #print('gt_class:', self._gt_boxes.data[0].cpu().numpy())
+      self._pred_rois = pred_roi
+      self._pred_boxes = pred_box
       self._add_losses() # compute losses
 
   # Extract the head feature maps, for example for vgg16 it is conv5_3

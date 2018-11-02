@@ -7,7 +7,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from nets.network import Network
+from nets.network_7f import Network
 from model.config import cfg
 
 import utils.timer
@@ -304,7 +304,15 @@ class resnetv1(Network):
       self.resnet.maxpool,self.resnet.layer1,self.resnet.layer2,self.resnet.layer3) ####
 
     # dynamic filter generator
-    self.dynamic_fc = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_0 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_1 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_2 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_3 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_4 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_5 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    self.dynamic_fc_6 = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, self._C4_feat_dim)
+    
+    self.response_fc = nn.Linear(self._rnn_num_layers * self._rnn_num_dirs * self._rnn_hidden_size, 7)
 
     # rpn
     self.rpn_net = nn.Conv2d(1024, 512, [3, 3], padding=1)

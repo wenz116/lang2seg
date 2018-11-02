@@ -109,7 +109,6 @@ class SolverWrapper(object):
     
     ####
     saved_state_dict = torch.load(str(sfile))
-    count_0 = 0
     count_1 = 0
     new_params = self.net.state_dict().copy()
     for name, param in new_params.items():
@@ -118,14 +117,9 @@ class SolverWrapper(object):
       if name in saved_state_dict and param.size() == saved_state_dict[name].size():
         new_params[name].copy_(saved_state_dict[name])
         #print('---- copy ----')
-      elif name in saved_state_dict and param[:,:-1,:,:].size() == saved_state_dict[name].size():
-        new_params[name][:,:-1,:,:].copy_(saved_state_dict[name])
-        print(name, param.size(), '->', param[:,:-1,:,:].size(), saved_state_dict[name].size(), '----')
-        count_0 += 1
       else:
         print(name, '----')
         count_1 += 1
-    print('size partially match:', count_0)
     print('size not match:', count_1)
     self.net.load_state_dict(new_params)
     ####
@@ -253,7 +247,6 @@ class SolverWrapper(object):
     
     ####
     saved_state_dict = torch.load(self.pretrained_model)
-    count_0 = 0
     count_1 = 0
     new_params = self.net.state_dict().copy()
     for name, param in new_params.items():
@@ -262,14 +255,9 @@ class SolverWrapper(object):
       if name in saved_state_dict and param.size() == saved_state_dict[name].size():
         new_params[name].copy_(saved_state_dict[name])
         #print('---- copy ----')
-      elif name in saved_state_dict and param[:,:-1,:,:].size() == saved_state_dict[name].size():
-        new_params[name][:,:-1,:,:].copy_(saved_state_dict[name])
-        print(name, param.size(), '->', param[:,:-1,:,:].size(), saved_state_dict[name].size(), '----')
-        count_0 += 1
       else:
         print(name, '----')
         count_1 += 1
-    print('size partially match:', count_0)
     print('size not match:', count_1)
     self.net.load_state_dict(new_params)
     ####

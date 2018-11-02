@@ -18,7 +18,7 @@ import _init_paths
 from loaders.gt_mrcn_loader import GtMRCNLoader
 import models.eval_dets_utils as eval_utils
 
-from nets.resnet_v1 import resnetv1
+from nets.resnet_v1_7f import resnetv1
 from model.config import cfg, cfg_from_file, cfg_from_list
 from model.test import eval_split
 from opt import parse_opt

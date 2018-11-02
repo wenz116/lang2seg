@@ -15,7 +15,7 @@ STEPSIZE="[360000]" # iteration when lr decay
 ANCHORS="[4,8,16,32]"
 RATIOS="[0.5,1,2]"
 
-CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/train.py \
+CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/train_spatial.py \
     --imdb_name ${IMDB} \
     --net_name ${NET} \
     --iters ${ITERS} \

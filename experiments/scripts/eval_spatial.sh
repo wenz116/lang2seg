@@ -20,7 +20,7 @@ case ${DATASET} in
     refcoco)
         for SPLIT in val testA testB
         do
-            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval.py \
+            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval_spatial.py \
                 --dataset ${DATASET} \
                 --splitBy ${SPLITBY} \
                 --output_postfix ${OUTPUT_POSTFIX} \
@@ -34,7 +34,7 @@ case ${DATASET} in
     refcoco+)
         for SPLIT in val testA testB
         do
-            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval.py \
+            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval_spatial.py \
                 --dataset ${DATASET} \
                 --splitBy ${SPLITBY} \
                 --output_postfix ${OUTPUT_POSTFIX} \
@@ -48,7 +48,7 @@ case ${DATASET} in
     refcocog)
         for SPLIT in val test
         do
-            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval.py \
+            CUDA_VISIBLE_DEVICES=${GPU_ID} python ./tools/eval_spatial.py \
                 --dataset ${DATASET} \
                 --splitBy ${SPLITBY} \
                 --output_postfix ${OUTPUT_POSTFIX} \

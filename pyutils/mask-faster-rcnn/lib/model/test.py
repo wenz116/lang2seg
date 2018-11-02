@@ -110,11 +110,13 @@ def im_detect(net, blobs):
 
   _, scores, bbox_pred, rois, net_conv = net.test_image(blobs)
   #test_image(self, image, im_info, labels, file_name)
+  #print('scores:', scores.shape, 'bbox_pred:', bbox_pred.shape, 'rois:', rois.shape)
+  # scores: (300, 81) bbox_pred: (300, 324) rois: (300, 5)
   
   boxes = rois[:, 1:5] / blobs['im_info'][0][2] # (n, 4)
   scores = np.reshape(scores, [scores.shape[0], -1])
   bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1]) # (n, C*4)
-  if cfg.TEST.BBOX_REG:
+  if cfg.TEST.BBOX_REG: ####
     # Apply bounding-box regression deltas
     box_deltas = bbox_pred
     pred_boxes = bbox_transform_inv(torch.from_numpy(boxes), torch.from_numpy(box_deltas)).numpy()
@@ -196,12 +198,13 @@ def eval_split(loader, model, crit, split, opt, max_per_image=100, thresh=0.):
   #predictions = []
   finish_flag = False
   
-  num_refs = {'train': 42404, 'val': 3811, 'testA': 1975, 'testB': 1810} #### RefCOCO
-  print('num_refs:', num_refs[split])
+  #num_refs = {'train': 42404, 'val': 3811, 'testA': 1975, 'testB': 1810} #### RefCOCO
+  #print('num_refs:', num_refs[split])
+  
   # all detections are collected into:
   #  all_boxes[sent][cls] = N x 5 array of detections in
   #  (x1, y1, x2, y2, score)
-  all_boxes = [[] for _ in range(81)]
+  #all_boxes = [[] for _ in range(81)]
   #all_boxes = [[[] for _ in range(81)]
   #       for _ in range(num_refs[split])]
   #  all_rles[sent][cls] = [rle] array of N rles
@@ -249,12 +252,19 @@ def eval_split(loader, model, crit, split, opt, max_per_image=100, thresh=0.):
       
       
       scores, boxes, net_conv, im_scale = im_detect(model, blobs) # (n, 81), (n, 81*4), (n, 1024, H, W), float
-      #print('--------')
+      
+      pred = np.where(scores == np.max(scores[:,1:]))
+      pred_roi = pred[0][0]
+      pred_class = pred[1][0]
+      pred_box = boxes[pred_roi, pred_class*4:(pred_class+1)*4]
+      #print('pred_box:', pred_box, 'pred_class:', pred_class)
+      
+      
       #print('scores:', scores.shape) # (266, 81) (300, 81)
       #print('boxes:', boxes.shape) # (266, 324) (300, 324) not scaled
       #print('net_conv:', net_conv.shape) # (1L, 1024L, 37L, 63L) (1L, 1024L, 37L, 63L)
       #print('im_scale:', im_scale) # 2.0 2.0
-      
+      """
       # skip j = 0, because it's the background class
       for j in range(1, 81):
         inds = np.where(scores[:, j] > thresh)[0]
@@ -283,6 +293,8 @@ def eval_split(loader, model, crit, split, opt, max_per_image=100, thresh=0.):
               if all_boxes[j][k, -1] >= image_highest:
                 pred_box = all_boxes[j][k][:4]
                 pred_class = j
+                print('pred_box:', pred_box, 'pred_class:', pred_class)
+      """
 
       gt_box = blobs['gt_boxes'][0, :4] / im_scale
       

@@ -125,7 +125,7 @@ class CaptionLoader(Loader):
     processed_ims = []
     im_scales = []
     for i in range(num_images):
-      im = cv2.imread('/4TB/ywchen/MAttNet/pyutils/mask-faster-rcnn/data/coco/images/train2014/COCO_train2014_{:0>12d}.jpg'.format(image_ids[i]))
+      im = cv2.imread('pyutils/mask-faster-rcnn/data/coco/images/train2014/COCO_train2014_{:0>12d}.jpg'.format(image_ids[i]))
       #cv2.imwrite('fig/COCO_train2014_{:0>12d}.jpg'.format(image_ids[i]), im)
       target_size = cfg.TRAIN.SCALES[0]
       im, im_scale = prep_im_for_blob(im, cfg.PIXEL_MEANS, target_size,

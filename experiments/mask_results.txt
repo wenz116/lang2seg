@@ -3719,3 +3719,831 @@ le-3 for LSTM, dynamic fc, 1e-4 for others, all 7f, all train from scratch, cap_
     precision@0.9 = 20.18
     overall IoU = 47.39
 
+1e-6 all 7f, Mask-RCNN start from 600k, caption model start from 546k, cap_loss_weight=0.1, fix=1, no detach, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.68
+    precision@0.6 = 71.05
+    precision@0.7 = 66.47
+    precision@0.8 = 54.46
+    precision@0.9 = 18.02
+    overall IoU = 56.10
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.44
+    precision@0.6 = 75.55
+    precision@0.7 = 70.94
+    precision@0.8 = 58.19
+    precision@0.9 = 15.57
+    overall IoU = 60.21
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.03
+    precision@0.6 = 63.75
+    precision@0.7 = 58.94
+    precision@0.8 = 49.22
+    precision@0.9 = 21.28
+    overall IoU = 50.72
+
+1e-6 all 7f, Mask-RCNN start from 600k, caption model start from 546k, cap_loss_weight=0.01, fix=1, no detach, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.45
+    precision@0.6 = 70.99
+    precision@0.7 = 66.36
+    precision@0.8 = 54.44
+    precision@0.9 = 18.06
+    overall IoU = 55.65
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.14
+    precision@0.6 = 75.32
+    precision@0.7 = 70.78
+    precision@0.8 = 57.73
+    precision@0.9 = 15.50
+    overall IoU = 59.99
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.85
+    precision@0.6 = 63.53
+    precision@0.7 = 59.00
+    precision@0.8 = 48.93
+    precision@0.9 = 21.57
+    overall IoU = 50.67
+
+1e-6 all 7f, Mask-RCNN start from 600k, caption model start from 546k, cap_loss_weight=0.1, fix=1, no detach, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.64
+    precision@0.6 = 71.01
+    precision@0.7 = 66.28
+    precision@0.8 = 54.58
+    precision@0.9 = 17.77
+    overall IoU = 55.97
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.14
+    precision@0.6 = 75.34
+    precision@0.7 = 70.85
+    precision@0.8 = 57.89
+    precision@0.9 = 15.77
+    overall IoU = 59.99
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.11
+    precision@0.6 = 63.95
+    precision@0.7 = 59.21
+    precision@0.8 = 49.70
+    precision@0.9 = 21.57
+    overall IoU = 51.21
+
+1e-6 all 7f, Mask-RCNN start from 600k, caption model start from 546k, cap_loss_weight=0.01, fix=1, no detach, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.50
+    precision@0.6 = 71.03
+    precision@0.7 = 66.33
+    precision@0.8 = 54.29
+    precision@0.9 = 17.91
+    overall IoU = 55.80
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.44
+    precision@0.6 = 75.75
+    precision@0.7 = 71.12
+    precision@0.8 = 58.12
+    precision@0.9 = 15.93
+    overall IoU = 60.43
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.18
+    precision@0.6 = 63.81
+    precision@0.7 = 59.06
+    precision@0.8 = 48.99
+    precision@0.9 = 21.63
+    overall IoU = 50.86
+
+e-4-3 fix 1 all 7f cycle, use predicted mask, cap_loss_weight=1, 630k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.52
+    precision@0.6 = 71.08
+    precision@0.7 = 66.31
+    precision@0.8 = 54.64
+    precision@0.9 = 17.83
+    overall IoU = 55.77
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.14
+    precision@0.6 = 75.18
+    precision@0.7 = 70.66
+    precision@0.8 = 57.56
+    precision@0.9 = 15.27
+    overall IoU = 59.85
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.99
+    precision@0.6 = 63.63
+    precision@0.7 = 58.92
+    precision@0.8 = 49.19
+    precision@0.9 = 21.22
+    overall IoU = 50.77
+
+e-4-3 fix 1 all 7f cycle, use predicted mask, cap_loss_weight=0.1, 630k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.45
+    precision@0.6 = 70.91
+    precision@0.7 = 66.37
+    precision@0.8 = 54.46
+    precision@0.9 = 17.93
+    overall IoU = 55.75
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.27
+    precision@0.6 = 75.34
+    precision@0.7 = 70.78
+    precision@0.8 = 57.61
+    precision@0.9 = 15.41
+    overall IoU = 60.22
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.69
+    precision@0.6 = 63.30
+    precision@0.7 = 58.80
+    precision@0.8 = 48.89
+    precision@0.9 = 21.22
+    overall IoU = 50.86
+
+e-4-3 fix 1 all 7f cycle, use predicted mask, cap_loss_weight=0.01, 630k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.68
+    precision@0.6 = 71.22
+    precision@0.7 = 66.66
+    precision@0.8 = 54.56
+    precision@0.9 = 17.96
+    overall IoU = 56.01
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.83
+    precision@0.6 = 75.64
+    precision@0.7 = 71.26
+    precision@0.8 = 58.25
+    precision@0.9 = 15.04
+    overall IoU = 60.40
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.54
+    precision@0.6 = 63.45
+    precision@0.7 = 58.96
+    precision@0.8 = 49.05
+    precision@0.9 = 21.14
+    overall IoU = 50.87
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 100k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 56.33
+    precision@0.6 = 54.28
+    precision@0.7 = 50.71
+    precision@0.8 = 40.97
+    precision@0.9 = 13.02
+    overall IoU = 40.66
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 58.12
+    precision@0.6 = 56.14
+    precision@0.7 = 52.63
+    precision@0.8 = 42.55
+    precision@0.9 = 10.52
+    overall IoU = 42.21
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 53.50
+    precision@0.6 = 51.03
+    precision@0.7 = 47.26
+    precision@0.8 = 39.88
+    precision@0.9 = 17.31
+    overall IoU = 39.49
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 200k
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 65.76
+    precision@0.6 = 64.12
+    precision@0.7 = 60.17
+    precision@0.8 = 48.56
+    precision@0.9 = 11.81
+    overall IoU = 48.01
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 57.70
+    precision@0.6 = 55.05
+    precision@0.7 = 51.27
+    precision@0.8 = 42.37
+    precision@0.9 = 18.98
+    overall IoU = 42.49
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 63.13
+    precision@0.6 = 60.84
+    precision@0.7 = 57.37
+    precision@0.8 = 46.84
+    precision@0.9 = 14.80
+    overall IoU = 45.67
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 100k
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 61.30
+    precision@0.6 = 59.43
+    precision@0.7 = 55.67
+    precision@0.8 = 44.72
+    precision@0.9 = 11.58
+    overall IoU = 44.24
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 58.46
+    precision@0.6 = 56.20
+    precision@0.7 = 52.59
+    precision@0.8 = 42.63
+    precision@0.9 = 13.52
+    overall IoU = 42.12
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 54.33
+    precision@0.6 = 51.72
+    precision@0.7 = 47.83
+    precision@0.8 = 40.43
+    precision@0.9 = 17.47
+    overall IoU = 39.91
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 200k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 63.43
+    precision@0.6 = 61.45
+    precision@0.7 = 57.85
+    precision@0.8 = 47.60
+    precision@0.9 = 15.26
+    overall IoU = 45.87
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 66.36
+    precision@0.6 = 64.73
+    precision@0.7 = 61.06
+    precision@0.8 = 50.26
+    precision@0.9 = 12.98
+    overall IoU = 48.58
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 57.41
+    precision@0.6 = 54.88
+    precision@0.7 = 50.72
+    precision@0.8 = 42.10
+    precision@0.9 = 18.43
+    overall IoU = 42.27
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 300k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 65.05
+    precision@0.6 = 62.88
+    precision@0.7 = 58.85
+    precision@0.8 = 48.14
+    precision@0.9 = 15.41
+    overall IoU = 47.16
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 70.09
+    precision@0.6 = 68.25
+    precision@0.7 = 64.50
+    precision@0.8 = 51.94
+    precision@0.9 = 13.63
+    overall IoU = 51.56
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 58.43
+    precision@0.6 = 56.11
+    precision@0.7 = 52.27
+    precision@0.8 = 43.10
+    precision@0.9 = 19.08
+    overall IoU = 43.65
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 400k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 69.91
+    precision@0.6 = 67.88
+    precision@0.7 = 64.07
+    precision@0.8 = 52.59
+    precision@0.9 = 17.81
+    overall IoU = 52.37
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 74.58
+    precision@0.6 = 72.49
+    precision@0.7 = 68.48
+    precision@0.8 = 56.55
+    precision@0.9 = 15.34
+    overall IoU = 56.74
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 63.34
+    precision@0.6 = 60.35
+    precision@0.7 = 55.98
+    precision@0.8 = 46.79
+    precision@0.9 = 21.16
+    overall IoU = 47.69
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 500k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 71.37
+    precision@0.6 = 69.01
+    precision@0.7 = 64.87
+    precision@0.8 = 53.14
+    precision@0.9 = 18.21
+    overall IoU = 53.72
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 75.22
+    precision@0.6 = 72.99
+    precision@0.7 = 68.87
+    precision@0.8 = 56.80
+    precision@0.9 = 15.47
+    overall IoU = 57.24
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 65.59
+    precision@0.6 = 62.32
+    precision@0.7 = 57.84
+    precision@0.8 = 48.28
+    precision@0.9 = 21.94
+    overall IoU = 49.63
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 300k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 68.59
+    precision@0.6 = 65.86
+    precision@0.7 = 61.55
+    precision@0.8 = 50.29
+    precision@0.9 = 17.12
+    overall IoU = 51.26
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 72.74
+    precision@0.6 = 70.67
+    precision@0.7 = 66.17
+    precision@0.8 = 54.73
+    precision@0.9 = 15.03
+    overall IoU = 54.94
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 61.18
+    precision@0.6 = 58.31
+    precision@0.7 = 53.92
+    precision@0.8 = 44.47
+    precision@0.9 = 19.29
+    overall IoU = 46.50
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 400k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 71.03
+    precision@0.6 = 68.61
+    precision@0.7 = 64.25
+    precision@0.8 = 53.28
+    precision@0.9 = 17.98
+    overall IoU = 52.83
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 74.63
+    precision@0.6 = 72.55
+    precision@0.7 = 68.57
+    precision@0.8 = 56.55
+    precision@0.9 = 14.76
+    overall IoU = 56.30
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 63.81
+    precision@0.6 = 60.61
+    precision@0.7 = 55.70
+    precision@0.8 = 46.44
+    precision@0.9 = 21.28
+    overall IoU = 47.22
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 500k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 71.86
+    precision@0.6 = 69.45
+    precision@0.7 = 65.28
+    precision@0.8 = 53.72
+    precision@0.9 = 18.28
+    overall IoU = 54.02
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 75.46
+    precision@0.6 = 73.33
+    precision@0.7 = 69.37
+    precision@0.8 = 56.96
+    precision@0.9 = 14.97
+    overall IoU = 57.46
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 64.85
+    precision@0.6 = 61.24
+    precision@0.7 = 56.80
+    precision@0.8 = 47.56
+    precision@0.9 = 21.24
+    overall IoU = 48.89
+
+1e-4-3 all 7f sigmoid 360k, fix=1, 600k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 71.50
+    precision@0.6 = 69.24
+    precision@0.7 = 65.20
+    precision@0.8 = 53.84
+    precision@0.9 = 17.57
+    overall IoU = 53.70
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 75.96
+    precision@0.6 = 73.55
+    precision@0.7 = 69.60
+    precision@0.8 = 56.97
+    precision@0.9 = 15.15
+    overall IoU = 58.12
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 65.02
+    precision@0.6 = 61.65
+    precision@0.7 = 57.57
+    precision@0.8 = 48.15
+    precision@0.9 = 21.77
+    overall IoU = 49.23
+
+1e-4-3 all 7f mean, sigmoid 360k, fix=1, 600k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 72.19
+    precision@0.6 = 69.70
+    precision@0.7 = 65.52
+    precision@0.8 = 53.90
+    precision@0.9 = 18.34
+    overall IoU = 54.15
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 75.64
+    precision@0.6 = 73.54
+    precision@0.7 = 69.49
+    precision@0.8 = 57.24
+    precision@0.9 = 15.18
+    overall IoU = 57.69
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 64.97
+    precision@0.6 = 61.51
+    precision@0.7 = 57.11
+    precision@0.8 = 47.81
+    precision@0.9 = 21.39
+    overall IoU = 48.87
+
+1e-5 all 7f res5, 600k 156k cycle, cap_loss_weight=0.1, 650k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.65
+    precision@0.6 = 70.97
+    precision@0.7 = 66.49
+    precision@0.8 = 54.49
+    precision@0.9 = 17.97
+    overall IoU = 55.88
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.76
+    precision@0.6 = 75.85
+    precision@0.7 = 71.49
+    precision@0.8 = 58.02
+    precision@0.9 = 15.57
+    overall IoU = 60.50
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.22
+    precision@0.6 = 63.81
+    precision@0.7 = 59.10
+    precision@0.8 = 49.40
+    precision@0.9 = 21.30
+    overall IoU = 51.02
+
+1e-5 all 7f res5, 600k 156k cycle, cap_loss_weight=0.1, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.45
+    precision@0.6 = 70.77
+    precision@0.7 = 66.04
+    precision@0.8 = 54.03
+    precision@0.9 = 17.64
+    overall IoU = 55.70
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.05
+    precision@0.6 = 75.04
+    precision@0.7 = 70.57
+    precision@0.8 = 57.26
+    precision@0.9 = 15.70
+    overall IoU = 59.90
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.18
+    precision@0.6 = 63.75
+    precision@0.7 = 59.25
+    precision@0.8 = 49.26
+    precision@0.9 = 21.26
+    overall IoU = 51.27
+
+1e-5 all 7f res5, 600k 156k cycle, cap_loss_weight=0.1, 750k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.55
+    precision@0.6 = 71.00
+    precision@0.7 = 66.30
+    precision@0.8 = 54.27
+    precision@0.9 = 17.71
+    overall IoU = 55.85
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.18
+    precision@0.6 = 75.09
+    precision@0.7 = 70.59
+    precision@0.8 = 57.61
+    precision@0.9 = 15.18
+    overall IoU = 59.84
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.73
+    precision@0.6 = 63.43
+    precision@0.7 = 58.45
+    precision@0.8 = 49.05
+    precision@0.9 = 21.41
+    overall IoU = 50.82
+
+1e-5 all 7f res5, 600k 156k cycle, cap_loss_weight=0.1, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 74.12
+    precision@0.6 = 71.46
+    precision@0.7 = 66.60
+    precision@0.8 = 54.50
+    precision@0.9 = 17.69
+    overall IoU = 56.22
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.73
+    precision@0.6 = 75.52
+    precision@0.7 = 71.36
+    precision@0.8 = 58.28
+    precision@0.9 = 15.41
+    overall IoU = 60.56
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.56
+    precision@0.6 = 62.96
+    precision@0.7 = 58.53
+    precision@0.8 = 49.01
+    precision@0.9 = 21.30
+    overall IoU = 50.54
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 650k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.59
+    precision@0.6 = 71.03
+    precision@0.7 = 66.37
+    precision@0.8 = 54.47
+    precision@0.9 = 17.88
+    overall IoU = 55.87
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.71
+    precision@0.6 = 75.85
+    precision@0.7 = 71.13
+    precision@0.8 = 58.21
+    precision@0.9 = 15.49
+    overall IoU = 60.34
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.20
+    precision@0.6 = 64.30
+    precision@0.7 = 59.55
+    precision@0.8 = 49.52
+    precision@0.9 = 21.37
+    overall IoU = 51.59
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.64
+    precision@0.6 = 71.08
+    precision@0.7 = 66.25
+    precision@0.8 = 54.15
+    precision@0.9 = 17.66
+    overall IoU = 55.90
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.30
+    precision@0.6 = 75.30
+    precision@0.7 = 70.74
+    precision@0.8 = 58.07
+    precision@0.9 = 15.57
+    overall IoU = 60.02
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.07
+    precision@0.6 = 63.30
+    precision@0.7 = 58.94
+    precision@0.8 = 49.21
+    precision@0.9 = 21.53
+    overall IoU = 50.96
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 750k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.52
+    precision@0.6 = 70.92
+    precision@0.7 = 66.20
+    precision@0.8 = 53.96
+    precision@0.9 = 17.57
+    overall IoU = 55.85
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.36
+    precision@0.6 = 75.50
+    precision@0.7 = 70.71
+    precision@0.8 = 58.16
+    precision@0.9 = 15.20
+    overall IoU = 60.13
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.77
+    precision@0.6 = 63.20
+    precision@0.7 = 58.96
+    precision@0.8 = 48.89
+    precision@0.9 = 20.82
+    overall IoU = 50.54
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 800k
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.50
+    precision@0.6 = 75.59
+    precision@0.7 = 70.83
+    precision@0.8 = 57.47
+    precision@0.9 = 15.70
+    overall IoU = 60.39
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.95
+    precision@0.6 = 71.09
+    precision@0.7 = 66.36
+    precision@0.8 = 53.94
+    precision@0.9 = 17.71
+    overall IoU = 56.18
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.52
+    precision@0.6 = 63.89
+    precision@0.7 = 59.43
+    precision@0.8 = 49.50
+    precision@0.9 = 21.08
+    overall IoU = 51.42
+
+1e-4-5 all 7f res5, 600k 258k cycle, cap_loss_weight=0.1, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 72.50
+    precision@0.6 = 70.04
+    precision@0.7 = 65.08
+    precision@0.8 = 52.89
+    precision@0.9 = 16.82
+    overall IoU = 54.55
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 76.29
+    precision@0.6 = 73.98
+    precision@0.7 = 69.61
+    precision@0.8 = 57.08
+    precision@0.9 = 14.83
+    overall IoU = 58.43
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 65.46
+    precision@0.6 = 62.47
+    precision@0.7 = 57.61
+    precision@0.8 = 47.81
+    precision@0.9 = 19.27
+    overall IoU = 49.17
+
+1e-4-5 all 7f res5_2, 600k 240k cycle, cap_loss_weight=0.1, 650k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 72.79
+    precision@0.6 = 70.10
+    precision@0.7 = 65.27
+    precision@0.8 = 52.91
+    precision@0.9 = 17.44
+    overall IoU = 54.74
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 76.75
+    precision@0.6 = 74.40
+    precision@0.7 = 69.97
+    precision@0.8 = 56.35
+    precision@0.9 = 15.40
+    overall IoU = 59.09
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 65.08
+    precision@0.6 = 62.00
+    precision@0.7 = 57.55
+    precision@0.8 = 47.83
+    precision@0.9 = 19.65
+    overall IoU = 48.46
+
+1e-4-5 all 7f res5_2, 600k 240k cycle, cap_loss_weight=0.1, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 72.37
+    precision@0.6 = 69.61
+    precision@0.7 = 65.05
+    precision@0.8 = 53.00
+    precision@0.9 = 17.25
+    overall IoU = 54.38
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.04
+    precision@0.6 = 74.76
+    precision@0.7 = 70.02
+    precision@0.8 = 56.92
+    precision@0.9 = 14.83
+    overall IoU = 59.30
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 65.00
+    precision@0.6 = 61.55
+    precision@0.7 = 56.43
+    precision@0.8 = 47.32
+    precision@0.9 = 20.37
+    overall IoU = 48.49
+
+1e-4-5 all 7f res5, 600k 258k cycle, cap_loss_weight=0.1, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 74.16
+    precision@0.6 = 71.65
+    precision@0.7 = 66.48
+    precision@0.8 = 54.33
+    precision@0.9 = 17.82
+    overall IoU = 56.40
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.85
+    precision@0.6 = 75.41
+    precision@0.7 = 70.71
+    precision@0.8 = 57.57
+    precision@0.9 = 15.52
+    overall IoU = 60.27
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.18
+    precision@0.6 = 63.02
+    precision@0.7 = 58.41
+    precision@0.8 = 48.09
+    precision@0.9 = 20.27
+    overall IoU = 50.72
+
+1e-4-5 all 7f res5_2, 600k 240k cycle, cap_loss_weight=0.1, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 72.27
+    precision@0.6 = 69.24
+    precision@0.7 = 64.54
+    precision@0.8 = 53.11
+    precision@0.9 = 16.84
+    overall IoU = 53.80
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 75.87
+    precision@0.6 = 73.87
+    precision@0.7 = 69.42
+    precision@0.8 = 56.85
+    precision@0.9 = 14.90
+    overall IoU = 58.20
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 64.87
+    precision@0.6 = 61.12
+    precision@0.7 = 56.82
+    precision@0.8 = 46.30
+    precision@0.9 = 19.86
+    overall IoU = 47.92
+
+1e-5-6 all 7f res5_2, 600k 240k cycle, cap_loss_weight=0.1, 700k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.80
+    precision@0.6 = 71.21
+    precision@0.7 = 66.59
+    precision@0.8 = 54.39
+    precision@0.9 = 18.16
+    overall IoU = 56.19
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.48
+    precision@0.6 = 75.62
+    precision@0.7 = 70.87
+    precision@0.8 = 57.98
+    precision@0.9 = 15.36
+    overall IoU = 60.30
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.11
+    precision@0.6 = 63.79
+    precision@0.7 = 59.12
+    precision@0.8 = 48.95
+    precision@0.9 = 21.22
+    overall IoU = 51.14
+
+1e-5-6 all 7f res5_2, 600k 240k cycle, cap_loss_weight=0.1, 800k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 74.06
+    precision@0.6 = 71.42
+    precision@0.7 = 66.51
+    precision@0.8 = 54.52
+    precision@0.9 = 18.10
+    overall IoU = 56.38
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.48
+    precision@0.6 = 75.38
+    precision@0.7 = 70.73
+    precision@0.8 = 57.77
+    precision@0.9 = 15.13
+    overall IoU = 60.11
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 67.09
+    precision@0.6 = 63.42
+    precision@0.7 = 58.76
+    precision@0.8 = 49.36
+    precision@0.9 = 21.08
+    overall IoU = 51.06
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 900k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.78
+    precision@0.6 = 71.21
+    precision@0.7 = 66.52
+    precision@0.8 = 54.46
+    precision@0.9 = 17.82
+    overall IoU = 56.16
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.94
+    precision@0.6 = 75.89
+    precision@0.7 = 71.38
+    precision@0.8 = 58.03
+    precision@0.9 = 14.95
+    overall IoU = 60.52
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.85
+    precision@0.6 = 63.28
+    precision@0.7 = 58.55
+    precision@0.8 = 49.13
+    precision@0.9 = 21.32
+    overall IoU = 51.03
+
+1e-5 all 7f res5_2, 600k 108k cycle, cap_loss_weight=0.1, 1000k
+[refcoco_unc][val]'s iou is:
+    precision@0.5 = 73.48
+    precision@0.6 = 70.87
+    precision@0.7 = 66.13
+    precision@0.8 = 54.04
+    precision@0.9 = 17.82
+    overall IoU = 55.94
+[refcoco_unc][testA]'s iou is:
+    precision@0.5 = 77.23
+    precision@0.6 = 75.16
+    precision@0.7 = 70.62
+    precision@0.8 = 57.77
+    precision@0.9 = 15.49
+    overall IoU = 59.91
+[refcoco_unc][testB]'s iou is:
+    precision@0.5 = 66.75
+    precision@0.6 = 63.18
+    precision@0.7 = 58.82
+    precision@0.8 = 49.09
+    precision@0.9 = 21.00
+    overall IoU = 50.84
+

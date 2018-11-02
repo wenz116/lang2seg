@@ -141,6 +141,7 @@ class Network(nn.Module):
       crops = F.max_pool2d(crops, 2, 2)
     else:
       grid = F.affine_grid(theta, torch.Size((rois.size(0), 1, cfg.POOLING_SIZE, cfg.POOLING_SIZE)))
+      #print('rois:', rois.size(), 'bottom:', bottom.size(), 'grid:', grid.size())
       crops = F.grid_sample(bottom.expand(rois.size(0), bottom.size(1), bottom.size(2), bottom.size(3)), grid)
     
     return crops
@@ -248,16 +249,20 @@ class Network(nn.Module):
 
     rpn_bbox_pred = self.rpn_bbox_pred_net(rpn)
     rpn_bbox_pred = rpn_bbox_pred.permute(0, 2, 3, 1).contiguous()  # batch * h * w * (num_anchors*4)
+    #print(self._mode)
 
     if self._mode == 'TRAIN':
       # produce targets and labels first
       rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred) # rois, roi_scores are varible
+      #print('train 0:', rois.size())
       rpn_labels = self._anchor_target_layer(rpn_cls_score)
       # generate proposals (like testing time)
       rois, _ = self._proposal_target_layer(rois, roi_scores)
+      #print('train 1:', rois.size())
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred)
+        #print('test 0:', rois.size())
       elif cfg.TEST.MODE == 'top':
         rois, _ = self._proposal_top_layer(rpn_cls_prob, rpn_bbox_pred)
       else:
@@ -277,7 +282,18 @@ class Network(nn.Module):
     cls_score = self.cls_score_net(fc7)
     cls_pred = torch.max(cls_score, 1)[1]
     cls_prob = F.softmax(cls_score, 1)
-    #cls_score: (256L, 81L) cls_prob: (256L, 81L)
+    
+    #cls_score_1 = cls_score.data.cpu().numpy()
+    #cls_prob_1 = cls_prob.data.cpu().numpy()
+    #print('cls_score:', cls_score.size(), 'cls_pred:', cls_pred.size(), 'cls_prob:', cls_prob.size())
+    #print(np.where(cls_score_1 == np.max(cls_score_1[:,1:])), np.where(cls_prob_1 == np.max(cls_prob_1[:,1:])))
+    
+    # training:
+    #cls_score: (256L, 81L) cls_pred: (256L,) cls_prob: (256L, 81L)
+    
+    # testing:
+    #cls_score: (300L, 81L) cls_pred: (300L,) cls_prob: (300L, 81L)
+    #cls_score: (234L, 81L) cls_pred: (234L,) cls_prob: (234L, 81L)
     bbox_pred = self.bbox_pred_net(fc7)
 
     self._predictions['cls_score'] = cls_score
@@ -483,14 +499,36 @@ class Network(nn.Module):
     
     # dynamic filter
     #hidden = torch.mean(hidden, 0, True) ##### need to change
-    dynamic_filter = F.tanh(self.dynamic_fc(hidden)) # change?
-    dynamic_filter = dynamic_filter.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_0 = F.tanh(self.dynamic_fc_0(hidden)) # change activation function?
+    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_1 = F.tanh(self.dynamic_fc_1(hidden))
+    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_2 = F.tanh(self.dynamic_fc_2(hidden))
+    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_3 = F.tanh(self.dynamic_fc_3(hidden))
+    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_4 = F.tanh(self.dynamic_fc_4(hidden))
+    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_5 = F.tanh(self.dynamic_fc_5(hidden))
+    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_6 = F.tanh(self.dynamic_fc_6(hidden))
+    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1) ####
+    
+    response_filter = F.tanh(self.response_fc(hidden))
+    response_filter = response_filter.view(self._batch_size, -1, 1, 1) ####
     
     #print('self._batch_size:', self._batch_size)
     #print('net_conv:', net_conv.size())
     #print('dynamic_filter:', dynamic_filter.size())
     #print('dynamic_filter:', torch.min(dynamic_filter).data.cpu().numpy(), torch.max(dynamic_filter).data.cpu().numpy())
     #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
+    #print('response_filter:', response_filter.size())
     
     #first = 1
     #for batch in range(self._batch_size):
@@ -500,9 +538,57 @@ class Network(nn.Module):
     #  else:
     #    response = torch.cat((response, F.conv2d(net_conv[batch:batch+1, :, :, :], dynamic_filter[batch:batch+1, :, :, :])), 0)
     
-    response = F.conv2d(net_conv, dynamic_filter) ####
-    #print('response:', response.size())
+    response_0 = F.conv2d(net_conv, dynamic_filter_0) ####
+    
+    mask_1 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_1[:, :, :int(mask_1.size(2)/2), :] = 1
+    net_conv_1 = net_conv * mask_1
+    response_1 = F.conv2d(net_conv_1, dynamic_filter_1) ####
+    
+    mask_2 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_2[:, :, int(mask_2.size(2)/2):, :] = 1
+    net_conv_2 = net_conv * mask_2
+    response_2 = F.conv2d(net_conv_2, dynamic_filter_2) ####
+    
+    mask_3 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_3[:, :, :, :int(mask_3.size(3)/2)] = 1
+    net_conv_3 = net_conv * mask_3
+    response_3 = F.conv2d(net_conv_3, dynamic_filter_3) ####
+    
+    mask_4 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_4[:, :, :, int(mask_4.size(3)/2):] = 1
+    net_conv_4 = net_conv * mask_4
+    response_4 = F.conv2d(net_conv_4, dynamic_filter_4) ####
+    
+    mask_5 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_5[:, :, int(mask_5.size(2)/4):int(mask_5.size(2)*3/4), :] = 1
+    net_conv_5 = net_conv * mask_5
+    response_5 = F.conv2d(net_conv_5, dynamic_filter_5) ####
+    
+    mask_6 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_6[:, :, :, int(mask_6.size(3)/4):int(mask_6.size(3)*3/4)] = 1
+    net_conv_6 = net_conv * mask_6
+    response_6 = F.conv2d(net_conv_6, dynamic_filter_6) ####
+    
+    response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
+    response = F.conv2d(response, response_filter) ####
+    #response = F.sigmoid(F.conv2d(response, response_filter)) ####
     net_conv = net_conv * response #### domain of net_conv need to be positive?
+    
+    #print('mask_1:', mask_1)
+    #print('mask_2:', mask_2)
+    #print('mask_3:', mask_3)
+    #print('mask_4:', mask_4)
+    
+    #print('response_0:', response_0.size())
+    #print('response_1:', response_1.size())
+    #print('response_2:', response_2.size())
+    #print('response_3:', response_3.size())
+    #print('response_4:', response_4.size())
+    
+    #print('response:', response.size())
+    #print('net_conv:', net_conv.size())
+    
     #print('net_conv:', net_conv.size())
     #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
     
@@ -573,6 +659,8 @@ class Network(nn.Module):
     
     spatial_fc7 = self._head_to_tail(pool5)  # (num_rois, 2048, 7, 7)
     cls_prob, bbox_pred = self._region_classification(spatial_fc7)
+    
+    self._predictions['spatial_fc7'] = spatial_fc7 ####
 
     if self._mode == 'TRAIN':
       # we only run mask prediction on foreground regions
@@ -670,6 +758,9 @@ class Network(nn.Module):
     self._labels = labels if labels is not None else None
     #self._labels = Variable(torch.from_numpy(labels).long().cuda()) if labels is not None else None
     self._file_name = file_name
+
+    if mode == 'TEST1':
+      mode = 'TEST'
 
     self._mode = mode
     self._sent_id = sent_id

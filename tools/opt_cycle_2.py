@@ -92,8 +92,8 @@ def parse_opt():
     #parser.add_argument('--rnn_type', type=str, default='lstm', help='rnn, gru, or lstm') ####
     parser.add_argument('--input_encoding_size', type=int, default=512, help='the encoding size of each token in the vocabulary, and the image.')
     parser.add_argument('--att_hid_size', type=int, default=512, help='the hidden size of the attention MLP; only useful in show_attend_tell; 0 if not using hidden layer')
-    parser.add_argument('--fc_feat_size', type=int, default=2048, help='2048 for resnet, 4096 for vgg')
-    parser.add_argument('--att_feat_size', type=int, default=2048, help='2048 for resnet, 512 for vgg')
+    parser.add_argument('--fc_feat_size', type=int, default=4096, help='2048 for resnet, 4096 for vgg')
+    parser.add_argument('--att_feat_size', type=int, default=4096, help='2048 for resnet, 512 for vgg')
 
     # Optimization: General
     parser.add_argument('--drop_prob_lm', type=float, default=0.5, help='strength of dropout in the Language Model RNN')

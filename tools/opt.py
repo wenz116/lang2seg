@@ -59,6 +59,8 @@ def parse_opt():
     parser.add_argument('--optim_alpha', type=float, default=0.8, help='alpha for adam')
     parser.add_argument('--optim_beta', type=float, default=0.999, help='beta used for adam')
     # Evaluation/Checkpointing
+    parser.add_argument('--output_postfix', type=str, default='model', help='postfix of directory to save models and tensorboard summaries')
+    parser.add_argument('--model_iter', default=100000, type=int, help='iteration of trained model for evaluation')
     parser.add_argument('--num_sents', type=int, default=-1, help='how many images to use when periodically evaluating the validation loss? (-1 = all)')
     parser.add_argument('--save_checkpoint_every', type=int, default=2000, help='how often to save a model checkpoint?')
     parser.add_argument('--checkpoint_path', type=str, default='output', help='directory to save models')   

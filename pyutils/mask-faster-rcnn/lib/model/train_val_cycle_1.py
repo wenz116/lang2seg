@@ -385,10 +385,10 @@ class SolverWrapper(object):
           for _sum in summary_val: self.valwriter.add_summary(_sum, float(iter))
           last_summary_time = now
           
-          print('------------------------------------------------')
-          for key, value in dict(self.net.named_parameters()).items():
-            if 'resnet.fc' in key:
-              print(key, value)
+          #print('------------------------------------------------')
+          #for key, value in dict(self.net.named_parameters()).items():
+          #  if 'resnet.fc' in key:
+          #    print(key, value)
           
         else:
           # Compute the graph without summary

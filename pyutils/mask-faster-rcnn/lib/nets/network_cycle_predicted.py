@@ -30,10 +30,16 @@ from model.config import cfg
 
 import tensorboardX as tb 
 
-from utils.mask_utils import recover_cls_masks
+from utils.mask_utils import recover_masks, recover_cls_masks
 from scipy.misc import imresize
 from PIL import Image ####
 import os
+
+from model.nms_wrapper import nms
+from model.bbox_transform import bbox_transform_inv
+
+# caption model
+import misc.utils as utils
 
 class Network(nn.Module):
   def __init__(self, batch_size=1):
@@ -287,7 +293,7 @@ class Network(nn.Module):
 
     return cls_prob, bbox_pred
 
-  def _mask_prediction(self, spatial_fc7):
+  def _mask_prediction(self, spatial_fc7, change=True): ####
     """
     Arguments:
     - spatial_fc7 : (num_rois, 2048, 7, 7)
@@ -299,8 +305,9 @@ class Network(nn.Module):
     mask_score = self.mask_pred_net(upsampled_m) # (n, 80, 14, 14)
     mask_prob  = F.sigmoid(mask_score)           # (n, 80, 14, 14) range (0,1)
     
-    self._predictions['mask_score'] = mask_score 
-    self._predictions['mask_prob'] = mask_prob
+    if change: ####
+      self._predictions['mask_score'] = mask_score 
+      self._predictions['mask_prob'] = mask_prob
 
     return mask_prob
 
@@ -402,23 +409,89 @@ class Network(nn.Module):
     # MASK, mask loss, only regress fg rois
     mask_targets = self._proposal_targets['mask_targets'] # (num_fg, 14, 14)
     mask_score   = self._predictions['mask_score']        # (num_fg, num_classes, 14, 14)
+    #print('0', mask_targets.size(), mask_score.size())
     assert mask_targets.size(0) == mask_score.size(0)
     num_fg = mask_targets.size(0)
     fg_label = label[:num_fg]  # (num_fg, )
     fg_label = fg_label.view(num_fg, 1, 1, 1).expand(num_fg, 1, cfg.MASK_SIZE, cfg.MASK_SIZE)
     mask_score = torch.gather(mask_score, 1, fg_label) # (num_fg, 1, 14, 14)
     mask_score = mask_score.squeeze(1) # (num_fg, 14, 14)
+    #print('1', mask_targets.size(), mask_score.size())
     loss_mask = F.binary_cross_entropy_with_logits(mask_score, mask_targets)
+
+
+    # Caption model, caption loss
+    fc_feats_all = self._predictions['net_conv'].mean(3).mean(2)
+    att_feats_all = F.adaptive_avg_pool2d(self._predictions['net_conv'], [14,14]).permute(0, 2, 3, 1)
+    
+    #print('net_conv:', self._predictions['net_conv'].size()) # (1L, 1024L, 38L, 50L)
+    #print('fc_feats_all:', fc_feats_all.size()) # (1L, 1024L)
+    #print('att_feats_all:', att_feats_all.size()) # (1L, 14L, 14L, 1024L)
+    
+    #### change gt_masks to predicted masks
+    #print('self._pred_masks 0:', self._pred_masks.shape)
+    #print('self._gt_masks 0:', self._gt_masks.shape)
+    
+    #tmp = [self._pred_masks, self._cap_labels, self._cap_masks]
+    #tmp = [Variable(torch.from_numpy(_), requires_grad=False).cuda() for _ in tmp]
+    #pred_masks, cap_labels, cap_masks = tmp
+    
+    pred_masks = Variable(torch.from_numpy(self._pred_masks), requires_grad=True).cuda()
+    cap_labels = Variable(torch.from_numpy(self._cap_labels), requires_grad=False).cuda()
+    cap_masks = Variable(torch.from_numpy(self._cap_masks), requires_grad=False).cuda()
+    
+    pred_masks = pred_masks.unsqueeze(1).float()
+    #print('pred_masks 0:', pred_masks.size())
+    
+    #print('pred_masks 0:', pred_masks.size(), [self._predictions['net_conv'].size(2), self._predictions['net_conv'].size(3)]) # (1, 600, 800)
+    pred_masks = F.adaptive_avg_pool2d(pred_masks,[self._predictions['net_conv'].size(2),self._predictions['net_conv'].size(3)])
+    pred_masks = F.sigmoid(pred_masks)
+    #pred_masks[pred_masks<0.5] = 0
+    #pred_masks[pred_masks>=0.5] = 1
+    
+    #print('pred_masks 1:', pred_masks.size())
+    
+    feats_mask = self._predictions['net_conv'] * pred_masks
+    fc_feats_mask = feats_mask.mean(3).mean(2)
+    att_feats_mask = F.adaptive_avg_pool2d(feats_mask,[14,14]).permute(0, 2, 3, 1)
+    
+    #print('feats_mask:', feats_mask.size()) # (1L, 1024L, 38L, 50L)
+    #print('fc_feats_mask:', fc_feats_mask.size()) # (1L, 1024L)
+    #print('att_feats_mask:', att_feats_mask.size()) # (1L, 14L, 14L, 1024L)
+    
+    fc_feats = torch.cat((fc_feats_all, fc_feats_mask), 1).detach()
+    att_feats = torch.cat((att_feats_all, att_feats_mask), 3).detach()
+    
+    #print('---------')
+    #print('fc_feats:', fc_feats.size()) # (50L, 2048L) 5 sents per image, 10 images per batch
+    #print('att_feats:', att_feats.size()) # (50L, 14L, 14L, 2048L)
+    #print('cap_labels:', cap_labels.size()) # (50L, 18L) 16+2
+    #print('cap_masks:', cap_masks.size()) # (50L, 18L)
+    #print('bounds:', data['bounds']) # {'wrapped': False, 'it_pos_now': 10, 'it_max': 113287}
+    
+    crit = utils.LanguageModelCriterion()
+    
+    loss_caption = crit(self.caption_model(fc_feats, att_feats, cap_labels), cap_labels[:,1:], cap_masks[:,1:])
 
     self._losses['cross_entropy'] = cross_entropy
     self._losses['loss_box'] = loss_box
     self._losses['rpn_cross_entropy'] = rpn_cross_entropy
     self._losses['rpn_loss_box'] = rpn_loss_box
     self._losses['loss_mask'] = loss_mask
+    self._losses['loss_caption'] = loss_caption
 
-    loss = cross_entropy + loss_box + rpn_cross_entropy + rpn_loss_box + loss_mask
+    loss = cross_entropy + loss_box + rpn_cross_entropy + rpn_loss_box + loss_mask + 0.01*loss_caption #### weight
     self._losses['total_loss'] = loss
 
+    #print('------------')
+    #print('cross_entropy:', cross_entropy.data.cpu().numpy(), cross_entropy.requires_grad)
+    #print('loss_box:', loss_box.data.cpu().numpy(), loss_box.requires_grad)
+    #print('rpn_cross_entropy:', rpn_cross_entropy.data.cpu().numpy(), rpn_cross_entropy.requires_grad)
+    #print('rpn_loss_box:', rpn_loss_box.data.cpu().numpy(), rpn_loss_box.requires_grad)
+    #print('loss_mask:', loss_mask.data.cpu().numpy(), loss_mask.requires_grad)
+    #print('loss_caption:', loss_caption.data.cpu().numpy(), loss_caption.requires_grad)
+    #print('loss:', loss.data.cpu().numpy(), loss.requires_grad)
+    
     for k in self._losses.keys():
       self._event_summaries[k] = self._losses[k]
 
@@ -483,14 +556,36 @@ class Network(nn.Module):
     
     # dynamic filter
     #hidden = torch.mean(hidden, 0, True) ##### need to change
-    dynamic_filter = F.tanh(self.dynamic_fc(hidden)) # change?
-    dynamic_filter = dynamic_filter.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_0 = F.tanh(self.dynamic_fc_0(hidden)) # change activation function?
+    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_1 = F.tanh(self.dynamic_fc_1(hidden))
+    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_2 = F.tanh(self.dynamic_fc_2(hidden))
+    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_3 = F.tanh(self.dynamic_fc_3(hidden))
+    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_4 = F.tanh(self.dynamic_fc_4(hidden))
+    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_5 = F.tanh(self.dynamic_fc_5(hidden))
+    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1) ####
+    
+    dynamic_filter_6 = F.tanh(self.dynamic_fc_6(hidden))
+    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1) ####
+    
+    response_filter = F.tanh(self.response_fc(hidden))
+    response_filter = response_filter.view(self._batch_size, -1, 1, 1) ####
     
     #print('self._batch_size:', self._batch_size)
     #print('net_conv:', net_conv.size())
     #print('dynamic_filter:', dynamic_filter.size())
     #print('dynamic_filter:', torch.min(dynamic_filter).data.cpu().numpy(), torch.max(dynamic_filter).data.cpu().numpy())
     #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
+    #print('response_filter:', response_filter.size())
     
     #first = 1
     #for batch in range(self._batch_size):
@@ -500,9 +595,56 @@ class Network(nn.Module):
     #  else:
     #    response = torch.cat((response, F.conv2d(net_conv[batch:batch+1, :, :, :], dynamic_filter[batch:batch+1, :, :, :])), 0)
     
-    response = F.conv2d(net_conv, dynamic_filter) ####
-    #print('response:', response.size())
+    response_0 = F.conv2d(net_conv, dynamic_filter_0) ####
+    
+    mask_1 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_1[:, :, :int(mask_1.size(2)/2), :] = 1
+    net_conv_1 = net_conv * mask_1
+    response_1 = F.conv2d(net_conv_1, dynamic_filter_1) ####
+    
+    mask_2 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_2[:, :, int(mask_2.size(2)/2):, :] = 1
+    net_conv_2 = net_conv * mask_2
+    response_2 = F.conv2d(net_conv_2, dynamic_filter_2) ####
+    
+    mask_3 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_3[:, :, :, :int(mask_3.size(3)/2)] = 1
+    net_conv_3 = net_conv * mask_3
+    response_3 = F.conv2d(net_conv_3, dynamic_filter_3) ####
+    
+    mask_4 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_4[:, :, :, int(mask_4.size(3)/2):] = 1
+    net_conv_4 = net_conv * mask_4
+    response_4 = F.conv2d(net_conv_4, dynamic_filter_4) ####
+    
+    mask_5 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_5[:, :, int(mask_5.size(2)/4):int(mask_5.size(2)*3/4), :] = 1
+    net_conv_5 = net_conv * mask_5
+    response_5 = F.conv2d(net_conv_5, dynamic_filter_5) ####
+    
+    mask_6 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
+    mask_6[:, :, :, int(mask_6.size(3)/4):int(mask_6.size(3)*3/4)] = 1
+    net_conv_6 = net_conv * mask_6
+    response_6 = F.conv2d(net_conv_6, dynamic_filter_6) ####
+    
+    response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
+    response = F.conv2d(response, response_filter)
     net_conv = net_conv * response #### domain of net_conv need to be positive?
+    
+    #print('mask_1:', mask_1)
+    #print('mask_2:', mask_2)
+    #print('mask_3:', mask_3)
+    #print('mask_4:', mask_4)
+    
+    #print('response_0:', response_0.size())
+    #print('response_1:', response_1.size())
+    #print('response_2:', response_2.size())
+    #print('response_3:', response_3.size())
+    #print('response_4:', response_4.size())
+    
+    #print('response:', response.size())
+    #print('net_conv:', net_conv.size())
+    
     #print('net_conv:', net_conv.size())
     #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
     
@@ -576,8 +718,8 @@ class Network(nn.Module):
 
     if self._mode == 'TRAIN':
       # we only run mask prediction on foreground regions
-      num_fg = self._proposal_targets['mask_targets'].size(0)
-      spatial_fc7 = spatial_fc7[:num_fg]
+      num_fg = self._proposal_targets['mask_targets'].size(0) #### set to 1?
+      spatial_fc7 = spatial_fc7[:num_fg] #### why choose the first num_fg? why not sort?
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_fg, num_classes, 14, 14)
     else:
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_rois, num_classes, 14, 14)
@@ -598,7 +740,7 @@ class Network(nn.Module):
     Return
     - masks    : Variable cuda (n, 14, 14), ranging [0,1]
     """
-    assert self._mode == 'TEST', 'only support testing mode'
+    #assert self._mode == 'TEST', 'only support testing mode'
 
     num_boxes = boxes.shape[0]
     rois = np.hstack([np.zeros((num_boxes, 1)), boxes]).astype(np.float32) # [0xyxy] 
@@ -612,7 +754,7 @@ class Network(nn.Module):
       pool5 = self._roi_pool_layer(net_conv, rois)
 
     spatial_fc7 = self._head_to_tail(pool5) 
-    mask_prob = self._mask_prediction(spatial_fc7) # (n, num_classes, 14, 14)
+    mask_prob = self._mask_prediction(spatial_fc7, change=False) # (n, num_classes, 14, 14) ####
 
     # get masks from labels
     labels = Variable(torch.from_numpy(labels).long().cuda(), volatile=True)
@@ -623,7 +765,7 @@ class Network(nn.Module):
     return mask_prob
 
   #def forward(self, image, im_info, dynamic_filter, gt_boxes=None, gt_masks=None, mode='TRAIN'):
-  def forward(self, image, im_info, gt_boxes=None, gt_masks=None, labels=None, file_name=None, mode='TRAIN', sent_id=0, save=0):
+  def forward(self, image, im_info, gt_boxes=None, gt_masks=None, labels=None, file_name=None, cap_labels=None, cap_masks=None, mode='TRAIN', sent_id=0, save=0):
     max_len = (labels != 0).sum(1).max().data[0]
     labels = labels[:, :max_len]
     
@@ -670,6 +812,9 @@ class Network(nn.Module):
     self._labels = labels if labels is not None else None
     #self._labels = Variable(torch.from_numpy(labels).long().cuda()) if labels is not None else None
     self._file_name = file_name
+    
+    self._cap_labels = cap_labels
+    self._cap_masks = cap_masks
 
     self._mode = mode
     self._sent_id = sent_id
@@ -704,6 +849,109 @@ class Network(nn.Module):
       else:
         self._predictions['bbox_pred'] = bbox_pred
     else:
+      
+      #print('self._gt_masks:', self._gt_masks.shape)
+      all_boxes = [[] for _ in range(81)]
+
+      scores, bbox_pred, rois = self._predictions['cls_prob'].data.cpu().numpy(), \
+                                self._predictions['bbox_pred'].data.cpu().numpy(), \
+                                self._predictions['rois'].data.cpu().numpy()
+  
+      boxes = rois[:, 1:5] # (n, 4)
+      scores = np.reshape(scores, [scores.shape[0], -1]) # (n, C)
+      bbox_pred = np.reshape(bbox_pred, [bbox_pred.shape[0], -1]) # (n, C*4)
+      
+      #print('np.max(scores):', np.max(scores[:, 1:]))
+      #print('np.argmax(scores):', np.argmax(scores[:, 1:]))
+      #print('boxes:', boxes.shape) # (256, 4)
+      #print('scores:', scores.shape) # (256, 81)
+      #print('bbox_pred:', bbox_pred.shape) # (256, 324)
+      
+      if cfg.TEST.BBOX_REG:
+        # Apply bounding-box regression deltas
+        box_deltas = bbox_pred
+        pred_boxes = bbox_transform_inv(torch.from_numpy(boxes), torch.from_numpy(box_deltas)).numpy()
+        im_shape = (self._im_info[0][0], self._im_info[0][1], 3) ####
+        # x1 >= 0
+        pred_boxes[:, 0::4] = np.maximum(pred_boxes[:, 0::4], 0)
+        # y1 >= 0
+        pred_boxes[:, 1::4] = np.maximum(pred_boxes[:, 1::4], 0)
+        # x2 < im_shape[1]
+        pred_boxes[:, 2::4] = np.minimum(pred_boxes[:, 2::4], im_shape[1] - 1)
+        # y2 < im_shape[0]
+        pred_boxes[:, 3::4] = np.minimum(pred_boxes[:, 3::4], im_shape[0] - 1)
+      else:
+        # Simply repeat the boxes, once for each class
+        pred_boxes = np.tile(boxes, (1, scores.shape[1]))
+
+      max_per_image = 100
+      thresh = 0.
+
+      # skip j = 0, because it's the background class
+      for j in range(1, 81):
+        inds = np.where(scores[:, j] > thresh)[0]
+        cls_scores = scores[inds, j] ####
+        cls_boxes = pred_boxes[inds, j*4:(j+1)*4]
+        cls_dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])) \
+          .astype(np.float32, copy=False)
+        keep = nms(torch.from_numpy(cls_dets), cfg.TEST.NMS).numpy() if cls_dets.size > 0 else []
+        cls_dets = cls_dets[keep, :]
+        all_boxes[j] = cls_dets
+
+      # Limit to max_per_image detections *over all classes*
+      if max_per_image > 0:
+        image_scores = np.hstack([all_boxes[j][:, -1]
+                      for j in range(1, 81)])
+        ##print('--------')
+        if len(image_scores) > max_per_image:
+          image_thresh = np.sort(image_scores)[-max_per_image]
+          image_highest = np.max(image_scores)
+          
+          for j in range(1, 81):
+            keep = np.where(all_boxes[j][:, -1] >= image_thresh)[0]
+            all_boxes[j] = all_boxes[j][keep, :] # choose largest 100 boxes for image i
+            
+            for k in range(len(all_boxes[j])):
+              if all_boxes[j][k, -1] >= image_highest:
+                pred_box = all_boxes[j][k][:4]
+                pred_class = j
+                #print('perd_score:', j, k, all_boxes[j][k][-1])
+                #print('pred_box:', pred_box)
+                #print('pred_class:', pred_class)
+      #print('gt_class:', int(blobs['gt_boxes'][0, -1]))
+
+
+      
+      # run mask branch on all_boxes[i][:]
+      accumulated_boxes = np.array([pred_box])
+      accumulated_labels = np.array([pred_class])
+      
+      #accumulated_boxes  = []
+      #accumulated_labels = []
+      #for j in range(1, 81):
+      #  if all_boxes[i][j].shape[0] > 0:
+      #    accumulated_boxes += [all_boxes[i][j][:, :4]]
+      #    accumulated_labels += [j]*all_boxes[i][j].shape[0]
+      #accumulated_boxes = np.vstack(accumulated_boxes)   # accumulate max_per_image boxes [xyxy] (100, 4)
+      #accumulated_labels = np.array(accumulated_labels, dtype=np.uint8) # n category labels
+      #print(net_conv.size(), accumulated_boxes, accumulated_labels)
+      mask_prob = self._predict_masks_from_boxes_and_labels(net_conv, 
+                              accumulated_boxes,  # scaled boxes [xyxy]
+                              accumulated_labels) # (n, 14, 14)
+      #print(mask_prob)
+      mask_prob = mask_prob.data.cpu().numpy() # convert to numpy
+      #print('accumulated_boxes:', accumulated_boxes, accumulated_boxes.shape) # (100, 4)
+      #print('accumulated_labels:', accumulated_labels, accumulated_labels.shape) # (100,)
+      #print('mask_prob:', np.min(mask_prob), np.max(mask_prob), mask_prob.shape) # 0~1 float (100, 14, 14)
+      #print('size:', int(self._im_info[0][0]), int(self._im_info[0][1]))
+      pred_mask = recover_masks(mask_prob, accumulated_boxes, int(self._im_info[0][0]), int(self._im_info[0][1])) # (n, ih, iw) uint8 [0,1]
+      #print('pred_mask 0:', np.unique(pred_mask), pred_mask.shape) # 0~255 int (100, 294, 500)
+      
+      pred_mask = (pred_mask > 122.).astype(np.uint8)  # (n, ih, iw) uint8 [0,1] original size
+      #print('pred_mask:', np.unique(pred_mask), pred_mask.shape)
+      self._pred_masks = pred_mask
+
+
       self._add_losses() # compute losses
 
   # Extract the head feature maps, for example for vgg16 it is conv5_3
@@ -725,7 +973,7 @@ class Network(nn.Module):
     self.eval()
     #self.forward(image, im_info, dynamic_filter, None, None, mode='TEST')
     #self.forward(image, im_info, None, None, labels, file_name, mode='TEST') # what we need
-    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'], blobs['gt_masks'], blobs['labels'], blobs['file_name'], mode='TEST', sent_id=blobs['sent_id'])
+    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'], blobs['gt_masks'], blobs['labels'], blobs['file_name'], cap_labels=None, cap_masks=None, mode='TEST', sent_id=blobs['sent_id'])
     cls_score, cls_prob, bbox_pred, rois, net_conv = self._predictions['cls_score'].data.cpu().numpy(), \
                                                      self._predictions['cls_prob'].data.cpu().numpy(), \
                                                      self._predictions['bbox_pred'].data.cpu().numpy(), \
@@ -742,7 +990,7 @@ class Network(nn.Module):
   def get_summary(self, blobs, idx): #, dynamic_filter):
     self.eval()
     #self.forward(blobs['data'], blobs['im_info'], dynamic_filter, blobs['gt_boxes'], blobs['gt_masks'])
-    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'])
+    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'], blobs['cap_labels'][idx:idx+1, :], blobs['cap_masks'][idx:idx+1, :])
     self.train()
     summary = self._run_summary_op(True)
 
@@ -750,13 +998,14 @@ class Network(nn.Module):
 
   def train_step(self, blobs, idx, train_op): #, dynamic_filter):
     #self.forward(blobs['data'], blobs['im_info'], dynamic_filter, blobs['gt_boxes'], blobs['gt_masks']) # what we need
-    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'])
-    rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss = self._losses['rpn_cross_entropy'].data[0], \
-                                                                      self._losses['rpn_loss_box'].data[0], \
-                                                                      self._losses['cross_entropy'].data[0], \
-                                                                      self._losses['loss_box'].data[0], \
-                                                                      self._losses['loss_mask'].data[0], \
-                                                                      self._losses['total_loss'].data[0]
+    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'], blobs['cap_labels'][idx:idx+1, :], blobs['cap_masks'][idx:idx+1, :])
+    rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss_caption, loss = self._losses['rpn_cross_entropy'].data[0], \
+                                                                                    self._losses['rpn_loss_box'].data[0], \
+                                                                                    self._losses['cross_entropy'].data[0], \
+                                                                                    self._losses['loss_box'].data[0], \
+                                                                                    self._losses['loss_mask'].data[0], \
+                                                                                    self._losses['loss_caption'].data[0], \
+                                                                                    self._losses['total_loss'].data[0]
     #utils.timer.timer.tic('backward')
     train_op.zero_grad()
     self._losses['total_loss'].backward()
@@ -765,17 +1014,18 @@ class Network(nn.Module):
 
     self.delete_intermediate_states()
 
-    return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss
+    return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss_caption, loss
 
   def train_step_with_summary(self, blobs, idx, train_op): #, dynamic_filter):
     #self.forward(blobs['data'], blobs['im_info'], dynamic_filter, blobs['gt_boxes'], blobs['gt_masks'])
-    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'])
-    rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss = self._losses['rpn_cross_entropy'].data[0], \
-                                                                      self._losses['rpn_loss_box'].data[0], \
-                                                                      self._losses['cross_entropy'].data[0], \
-                                                                      self._losses['loss_box'].data[0], \
-                                                                      self._losses['loss_mask'].data[0], \
-                                                                      self._losses['total_loss'].data[0]
+    self.forward(blobs['data'], blobs['im_info'], blobs['gt_boxes'][idx:idx+1, :], blobs['gt_masks'][idx:idx+1, :, :], blobs['labels'][idx:idx+1, :], blobs['file_name'], blobs['cap_labels'][idx:idx+1, :], blobs['cap_masks'][idx:idx+1, :])
+    rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss_caption, loss = self._losses['rpn_cross_entropy'].data[0], \
+                                                                                    self._losses['rpn_loss_box'].data[0], \
+                                                                                    self._losses['cross_entropy'].data[0], \
+                                                                                    self._losses['loss_box'].data[0], \
+                                                                                    self._losses['loss_mask'].data[0], \
+                                                                                    self._losses['loss_caption'].data[0], \
+                                                                                    self._losses['total_loss'].data[0]
     train_op.zero_grad()
     self._losses['total_loss'].backward()
     train_op.step()
@@ -783,7 +1033,7 @@ class Network(nn.Module):
 
     self.delete_intermediate_states()
 
-    return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss, summary
+    return rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss_caption, loss, summary
 
   def train_step_no_return(self, blobs, train_op): #, dynamic_filter):
     #self.forward(blobs['data'], blobs['im_info'], dynamic_filter, blobs['gt_boxes'], blobs['gt_masks'])

@@ -196,14 +196,21 @@ class SolverWrapper(object):
       params = []
       for key, value in dict(self.net.named_parameters()).items():
         if value.requires_grad: # layer1 (when RESNET.FIXED_BLOCKS = 1), bn, downsample excluded
-          if ('rnn_encoder' in key or 'dynamic_fc' in key or 'response' in key) and 'bias' in key:
-            params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*10, 'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
-            print(key, '++++****', lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*10)
-          elif 'rnn_encoder' in key or 'dynamic_fc' in key or 'response' in key:
-            params += [{'params':[value],'lr':lr*10, 'weight_decay': cfg.TRAIN.WEIGHT_DECAY}]
-            print(key, '----****', lr*10)
-            
-          elif 'bias' in key:
+          #if ('rnn_encoder' in key or 'dynamic_fc' in key or 'response' in key) and 'bias' in key:
+          #  params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*10, 'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
+          #  print(key, '++++****', lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*10)
+          #elif 'rnn_encoder' in key or 'dynamic_fc' in key or 'response' in key:
+          #  params += [{'params':[value],'lr':lr*10, 'weight_decay': cfg.TRAIN.WEIGHT_DECAY}]
+          #  print(key, '----****', lr*10)
+          
+          #if 'caption_model' in key and 'bias' in key:
+          #  params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*0.1, 'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
+          #  print(key, '++++****', lr*(cfg.TRAIN.DOUBLE_BIAS + 1)*0.1)
+          #elif 'caption_model' in key:
+          #  params += [{'params':[value],'lr':lr*0.1, 'weight_decay': cfg.TRAIN.WEIGHT_DECAY}]
+          #  print(key, '----****', lr*0.1)
+          
+          if 'bias' in key:
             params += [{'params':[value],'lr':lr*(cfg.TRAIN.DOUBLE_BIAS + 1), 'weight_decay': cfg.TRAIN.BIAS_DECAY and cfg.TRAIN.WEIGHT_DECAY or 0}]
             print(key, '++++++++', lr*(cfg.TRAIN.DOUBLE_BIAS + 1))
           else:
@@ -385,6 +392,11 @@ class SolverWrapper(object):
           summary_val = self.net.get_summary(blobs_val, idx_val)
           for _sum in summary_val: self.valwriter.add_summary(_sum, float(iter))
           last_summary_time = now
+          
+          #for key, value in dict(self.net.named_parameters()).items():
+          #  if ('rpn' in key or 'layer3.18' in key or 'layer4.2' in key) and 'weight' in key and value.requires_grad:
+          #    print(key, value)
+
         else:
           # Compute the graph without summary
           rpn_loss_cls, rpn_loss_box, loss_cls, loss_box, loss_mask, loss_caption, total_loss = \

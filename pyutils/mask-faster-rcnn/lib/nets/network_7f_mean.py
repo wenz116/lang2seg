@@ -553,6 +553,7 @@ class Network(nn.Module):
     
     response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
     response = torch.mean(response, 1, keepdim=True)
+    #response = F.sigmoid(torch.mean(response, 1, keepdim=True))
     net_conv = net_conv * response #### domain of net_conv need to be positive?
     
     #print('mask_1:', mask_1)
