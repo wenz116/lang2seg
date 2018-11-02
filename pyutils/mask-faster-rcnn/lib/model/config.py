@@ -25,7 +25,7 @@ __C.TRAIN.LEARNING_RATE = 1e-4 ####
 __C.TRAIN.MOMENTUM = 0.9
 
 # Weight decay, for regularization
-__C.TRAIN.WEIGHT_DECAY = 0.0005
+__C.TRAIN.WEIGHT_DECAY = 0.0001 #0.0005 ####
 
 # Factor for reducing the learning rate
 __C.TRAIN.GAMMA = 0.1
@@ -34,10 +34,10 @@ __C.TRAIN.GAMMA = 0.1
 __C.TRAIN.STEPSIZE = [30000] ####
 
 # Iteration intervals for showing the loss during training, on command line interface
-__C.TRAIN.DISPLAY = 10
+__C.TRAIN.DISPLAY = 20 #10 ####
 
 # Whether to double the learning rate for bias
-__C.TRAIN.DOUBLE_BIAS = True
+__C.TRAIN.DOUBLE_BIAS = False #True ####
 
 # Whether to initialize the weights with truncated normal distribution 
 __C.TRAIN.TRUNCATED = False
@@ -69,7 +69,7 @@ __C.TRAIN.MAX_SIZE = 1000
 __C.TRAIN.IMS_PER_BATCH = 1
 
 # Minibatch size (number of regions of interest [ROIs])
-__C.TRAIN.BATCH_SIZE = 128
+__C.TRAIN.BATCH_SIZE = 256 #128 ####
 
 # Fraction of minibatch that is labeled foreground (i.e. class > 0)
 __C.TRAIN.FG_FRACTION = 0.25
@@ -80,7 +80,7 @@ __C.TRAIN.FG_THRESH = 0.5
 # Overlap threshold for a ROI to be considered background (class = 0 if
 # overlap in [LO, HI))
 __C.TRAIN.BG_THRESH_HI = 0.5
-__C.TRAIN.BG_THRESH_LO = 0.1
+__C.TRAIN.BG_THRESH_LO = 0.0 #0.1 ####
 
 # Use horizontally-flipped images during training?
 __C.TRAIN.USE_FLIPPED = True
@@ -183,7 +183,7 @@ __C.TEST.SVM = False
 __C.TEST.BBOX_REG = True
 
 # Propose boxes
-__C.TEST.HAS_RPN = False
+__C.TEST.HAS_RPN = True #False ####
 
 # Test using these proposals
 __C.TEST.PROPOSAL_METHOD = 'gt'
@@ -264,7 +264,7 @@ __C.DATA_DIR = osp.abspath(osp.join(__C.ROOT_DIR, 'data'))
 __C.MATLAB = 'matlab'
 
 # Place outputs under an experiments directory
-__C.EXP_DIR = 'default'
+__C.EXP_DIR = 'res101' #'default' ####
 
 # Use GPU implementation of non-maximum suppression
 __C.USE_GPU_NMS = True
@@ -276,7 +276,7 @@ __C.POOLING_MODE = 'crop'
 __C.POOLING_SIZE = 7
 
 # Anchor scales for RPN
-__C.ANCHOR_SCALES = [8,16,32]
+__C.ANCHOR_SCALES = [4,8,16,32] #[8,16,32] ####
 
 # Anchor ratios for RPN
 __C.ANCHOR_RATIOS = [0.5,1,2]
