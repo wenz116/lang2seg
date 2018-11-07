@@ -24,7 +24,7 @@ from model.train_val_cycle import get_training_roidb, train_net
 from datasets.factory import get_imdb
 from model.config import cfg, cfg_from_file, cfg_from_list
 import datasets.imdb
-from nets.resnet_v1_cycle import resnetv1
+from nets.resnet_v1_cycle_res5_2 import resnetv1
 
 # torch
 import torch 
@@ -68,15 +68,15 @@ def main(args):
   #histories = {}
   if opt['start_from']is not None:
     # open old infos and check if models are compatible
-    with open(os.path.join(opt['start_from'], 'infos-best.pkl')) as f:
+    with open(os.path.join(opt['dataset_splitBy'], opt['start_from'], 'infos-best.pkl')) as f:
       infos = cPickle.load(f)
       saved_model_opt = infos['opt']
       need_be_same = ['caption_model', 'rnn_type', 'rnn_size', 'num_layers']
       for checkme in need_be_same:
         assert vars(saved_model_opt)[checkme] == opt[checkme], "Command line argument and saved model disagree on '%s'" % checkme
 
-    #if os.path.isfile(os.path.join(opt['start_from'], 'histories.pkl')):
-    #  with open(os.path.join(opt['start_from'], 'histories.pkl')) as f:
+    #if os.path.isfile(os.path.join(opt['dataset_splitBy'], opt['start_from'], 'histories.pkl')):
+    #  with open(os.path.join(opt['dataset_splitBy'], opt['start_from'], 'histories.pkl')) as f:
     #    histories = cPickle.load(f)
   
   

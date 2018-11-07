@@ -44,10 +44,10 @@ def setup(opt):
     # check compatibility if training is continued from previously saved model
     if opt.get('start_from', None) is not None:
         # check if all necessary files exist 
-        assert os.path.isdir(opt['start_from']), '%s must be a path' % opt['start_from']
-        assert os.path.isfile(os.path.join(opt['start_from'], 'infos-best.pkl')), 'infos-best.pkl file does not exist in path %s' % opt['start_from']
-        model.load_state_dict(torch.load(os.path.join(opt['start_from'], 'model-best.pth')))
+        assert os.path.isdir(os.path.join(opt['dataset_splitBy'], opt['start_from'])), '%s must be a path' % os.path.join(opt['dataset_splitBy'], opt['start_from'])
+        assert os.path.isfile(os.path.join(opt['dataset_splitBy'], opt['start_from'], 'infos-best.pkl')), 'infos-best.pkl file does not exist in path %s' % os.path.join(opt['dataset_splitBy'], opt['start_from'])
+        model.load_state_dict(torch.load(os.path.join(opt['dataset_splitBy'],opt['start_from'], 'model-best.pth')))
         print('--------------------------------')
-        print('Caption model restored from {}'.format(os.path.join(opt['start_from'], 'model-best.pth')))
+        print('Caption model restored from {}'.format(os.path.join(opt['dataset_splitBy'],opt['start_from'], 'model-best.pth')))
 
     return model

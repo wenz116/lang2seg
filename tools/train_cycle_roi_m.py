@@ -16,7 +16,7 @@ from pprint import pprint
 import _init_paths
 from loaders.cycle_loader import CycleLoader
 import models.utils as model_utils
-from opt_cycle import parse_opt
+from opt_cycle_2 import parse_opt ####
 import misc.utils as utils
 
 # mrcn path
@@ -24,7 +24,7 @@ from model.train_val_cycle import get_training_roidb, train_net
 from datasets.factory import get_imdb
 from model.config import cfg, cfg_from_file, cfg_from_list
 import datasets.imdb
-from nets.resnet_v1_cycle import resnetv1
+from nets.resnet_v1_cycle_roi_m import resnetv1
 
 # torch
 import torch 
@@ -82,7 +82,7 @@ def main(args):
   
   
   net = resnetv1(opt, batch_size=opt['batch_size'], num_layers=101) #### determine batch size in opt.py
-
+  
   # output directory where the models are saved
   output_dir = osp.join(opt['dataset_splitBy'], 'output_{}'.format(opt['output_postfix']))
   print('Output will be saved to `{:s}`'.format(output_dir))
