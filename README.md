@@ -30,19 +30,18 @@ The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1.py` and 
 ```
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f.py` and `pyutils/mask-faster-rcnn/lib/nets/network_7f.py`.
 
-3. Train the model with spatial dynamic filters and response loss:
+3. Train the model with spatial dynamic filters and caption loss:
+```
+./experiments/scripts/train_cycle.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> att2in2 <CAPTION_LOSS_WEIGHT>
+```
+The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_res5_2.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_res5_2.py`.
+
+4. Train the model with spatial dynamic filters and response loss:
 ```
 ./experiments/scripts/train_response.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
 ```
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f_response.py` and `pyutils/mask-faster-rcnn/lib/nets/network_7f_response.py`.
 
-4. Train the whole model with caption loss:
-```
-./experiments/scripts/train_cycle.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> att2in2 <CAPTION_LOSS_WEIGHT>
-```
-The whole model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_res5_2.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_res5_2.py`.
-
-Losses are calculated in [_add_losses()](https://github.com/wenz116/lang2seg/blob/master/pyutils/mask-faster-rcnn/lib/nets/network_cycle.py#L396).
 
 ## Evaluation
 1. Evaluate the baseline segmentation model:
@@ -53,7 +52,7 @@ Evaluate the model at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`, of trained 
 
 Detection and segmentation results will be saved at `experiments/det_results.txt` and `experiments/mask_results.txt` respectively.
 
-2. Evaluate the model with spatial dynamic filters:
+2. Evaluate the model with spatial dynamic filters (and caption loss):
 ```
 ./experiments/scripts/eval_spatial.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> <MODEL_ITER>
 ```
