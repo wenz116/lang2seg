@@ -1,18 +1,13 @@
 # models
-caption_log*
 output*
 
 fig/
 net_conv/
 
-response/
 result*
 tb*
 
 cache/
 data/
-pyutils/
 
-
-# pyc
 *.pyc
