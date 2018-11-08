@@ -1,7 +1,6 @@
 # lang2seg
 
 ## Prerequisites
-
 * Python 2.7
 * Pytorch 0.2 or 0.3
 * CUDA 8.0
@@ -10,17 +9,20 @@
 * COCO training set should be downloaded in `pyutils/mask-faster-rcnn/data/coco/images/train2014`.
 
 ## Preprocessing
-* The processed data is uploaded in `lang2seg/cache/prepro/`
+The processed data is uploaded in `lang2seg/cache/prepro/`.
 
 ## Training
+
+* `<DATASET> <SPLITBY>` pairs contain: refcoco unc/refcoco+ unc/refcocog umd/refcocog google
+
+* Output model will be saved at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`. If there are trained models in this directory, the model of the latest iteratioin will be loaded.
+
+* The iteration when learning rate decay is specified as `STEPSIZE` in `train_*.sh`.
+
 1. Train the baseline segmentation model with only 1 dynamic filter:
 ```
 ./experiments/scripts/train_baseline.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
 ```
-`<DATASET> <SPLITBY>` pairs contain: refcoco unc/refcoco+ unc/refcocog umd/refcocog google
-
-Output model will be saved at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`.
-
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1.py` and `pyutils/mask-faster-rcnn/lib/nets/network.py`.
 
 2. Train the model with spatial dynamic filters:
@@ -33,6 +35,8 @@ The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f.py` a
 ```
 ./experiments/scripts/train_cycle.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> att2in2 <CAPTION_LOSS_WEIGHT>
 ```
+The pretrained caption model should be placed at `<DATASET>_<SPLITBY>/caption_log_res5_2/`, named as `model-best.pth` and `infos-best.pkl`.
+
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_res5_2.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_res5_2.py`.
 
 4. Train the model with spatial dynamic filters and response loss:
