@@ -10,16 +10,15 @@
 * COCO training set should be downloaded in `pyutils/mask-faster-rcnn/data/coco/images/train2014`.
 
 ## Preprocessing
-```
-python tools/prepro.py --dataset <DATASET> --splitBy <SPLITBY>
-```
-`<DATASET> <SPLITBY>` pairs contain: refcoco unc/refcoco+ unc/refcocog umd/refcocog google
+* The processed data is uploaded in `lang2seg/cache/prepro/`
 
 ## Training
 1. Train the baseline segmentation model with only 1 dynamic filter:
 ```
 ./experiments/scripts/train_baseline.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
 ```
+`<DATASET> <SPLITBY>` pairs contain: refcoco unc/refcoco+ unc/refcocog umd/refcocog google
+
 Output model will be saved at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`.
 
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1.py` and `pyutils/mask-faster-rcnn/lib/nets/network.py`.
