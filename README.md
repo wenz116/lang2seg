@@ -9,7 +9,7 @@
 * COCO training set should be downloaded in `pyutils/mask-faster-rcnn/data/coco/images/train2014`.
 
 ## Preprocessing
-The processed data is uploaded in `lang2seg/cache/prepro/`.
+The processed data is uploaded in `cache/prepro/`.
 
 ## Training
 
@@ -35,6 +35,8 @@ The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f.py` a
 ```
 ./experiments/scripts/train_cycle.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> att2in2 <CAPTION_LOSS_WEIGHT>
 ```
+The pretrained Mask R-CNN model should be placed at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`. If there are multiple models in the directory, the model of the latest iteration will be loaded.
+
 The pretrained caption model should be placed at `<DATASET>_<SPLITBY>/caption_log_res5_2/`, named as `model-best.pth` and `infos-best.pkl`.
 
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_res5_2.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_res5_2.py`.
@@ -45,6 +47,15 @@ The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_re
 ```
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_7f_response.py` and `pyutils/mask-faster-rcnn/lib/nets/network_7f_response.py`.
 
+5. Train the model with spatial dynamic filters, response loss and caption loss:
+```
+./experiments/scripts/train_cycle_response.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> att2in2 <CAPTION_LOSS_WEIGHT>
+```
+The pretrained Mask R-CNN model should be placed at `<DATASET>_<SPLITBY>/output_<OUTPUT_POSTFIX>`. If there are multiple models in the directory, the model of the latest iteration will be loaded.
+
+The pretrained caption model should be placed at `<DATASET>_<SPLITBY>/caption_log_response/`, named as `model-best.pth` and `infos-best.pkl`.
+
+The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_response.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_response.py`.
 
 ## Evaluation
 1. Evaluate the baseline segmentation model:
@@ -60,7 +71,7 @@ Detection and segmentation results will be saved at `experiments/det_results.txt
 ./experiments/scripts/eval_spatial.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> <MODEL_ITER>
 ```
 
-3. Evaluate the model with spatial dynamic filters and response loss:
+3. Evaluate the model with spatial dynamic filters and response loss (and caption loss):
 ```
 ./experiments/scripts/eval_response.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> <MODEL_ITER>
 ```
