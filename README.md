@@ -57,6 +57,14 @@ The pretrained caption model should be placed at `<DATASET>_<SPLITBY>/caption_lo
 
 The Mask R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/resnet_v1_cycle_response.py` and `pyutils/mask-faster-rcnn/lib/nets/network_cycle_response.py`.
 
+6. Train the model with spatial dynamic filters and response loss for VGG16 and Faster R-CNN:
+
+Download the pre-trained Faster R-CNN model [here](https://drive.google.com/drive/folders/0B7fNdx_jAqhtU1laZEhlM09fazA) (coco_900k-1190k.tar), and put the .pth and .pkl files in `pyutils/mask-faster-rcnn/output/vgg16/coco_2014_train+coco_2014_valminusminival/`
+```
+./experiments/scripts/train_vgg.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX>
+```
+The Faster R-CNN model is in `pyutils/mask-faster-rcnn/lib/nets/vgg16.py` and `pyutils/mask-faster-rcnn/lib/nets/network_vgg.py`.
+
 ## Evaluation
 1. Evaluate the baseline segmentation model:
 ```
@@ -74,4 +82,9 @@ Detection and segmentation results will be saved at `experiments/det_results.txt
 3. Evaluate the model with spatial dynamic filters and response loss (and caption loss):
 ```
 ./experiments/scripts/eval_response.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> <MODEL_ITER>
+```
+
+4. Evaluate the model with spatial dynamic filters and response loss for VGG16 and Faster R-CNN:
+```
+./experiments/scripts/eval_vgg.sh <GPUID> <DATASET> <SPLITBY> <OUTPUT_POSTFIX> <MODEL_ITER>
 ```
