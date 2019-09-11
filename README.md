@@ -17,7 +17,7 @@ Contact: Yi-Wen Chen (chenyiwena at gmail dot com)
 Please cite our paper if you find it useful for your research.
 
 ```
-@inproceedings{Chen_lang2Seg_2019,
+@inproceedings{Chen_lang2seg_2019,
   author = {Y.-W. Chen and Y.-H. Tsai and T. Wang and Y.-Y. Lin and M.-H. Yang},
   booktitle = {British Machine Vision Conference (BMVC)},
   title = {Referring Expression Object Segmentation with Caption-Aware Consistency},
