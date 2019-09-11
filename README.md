@@ -4,6 +4,10 @@ PyTorch implementation of our method for segmenting the object in an image speci
 
 Contact: Yi-Wen Chen (chenyiwena at gmail dot com)
 
+<p align="center">
+<img src="https://github.com/wenz116/lang2seg/blob/master/figure/overview.png" width="65%">
+</p>
+
 ## Paper
 
 [Referring Expression Object Segmentation with Caption-Aware Consistency](https://bmvc2019.org/wp-content/uploads/papers/0196-paper.pdf) <br />
@@ -103,7 +107,7 @@ Detection and segmentation results will be saved at `experiments/det_results.txt
 ```
 
 ## Acknowledgement
-Thanks for the work of [Licheng Yu](https://www.cs.unc.edu/~licheng/). Our code is based on the implementation of [MattNet](https://github.com/lichengunc/MAttNet).
+Thanks for the work of [Licheng Yu](https://www.cs.unc.edu/~licheng/). Our code is heavily borrowed from the implementation of [MattNet](https://github.com/lichengunc/MAttNet).
 
 ## Note
 The model and code are available for non-commercial research purposes only.
