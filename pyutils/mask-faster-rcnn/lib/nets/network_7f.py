@@ -32,7 +32,7 @@ import tensorboardX as tb
 
 from utils.mask_utils import recover_cls_masks
 from scipy.misc import imresize
-from PIL import Image ####
+from PIL import Image
 import os
 
 class Network(nn.Module):
@@ -141,7 +141,6 @@ class Network(nn.Module):
       crops = F.max_pool2d(crops, 2, 2)
     else:
       grid = F.affine_grid(theta, torch.Size((rois.size(0), 1, cfg.POOLING_SIZE, cfg.POOLING_SIZE)))
-      #print('rois:', rois.size(), 'bottom:', bottom.size(), 'grid:', grid.size())
       crops = F.grid_sample(bottom.expand(rois.size(0), bottom.size(1), bottom.size(2), bottom.size(3)), grid)
     
     return crops
@@ -239,7 +238,6 @@ class Network(nn.Module):
     # change it so that the score has 2 as its channel size
     rpn_cls_score_reshape = rpn_cls_score.view(self._batch_size, 2, -1, rpn_cls_score.size()[-1]) # batch * 2 * (num_anchors*h) * w
     rpn_cls_prob_reshape = F.softmax(rpn_cls_score_reshape, 1)  # batch * 2 * (num_anchors*h) * w
-    #rpn_cls_score_reshape: (1L, 2L, 456L, 50L) rpn_cls_prob_reshape: (1L, 2L, 456L, 50L)
     
     # Move channel to the last dimenstion, to fit the input of python functions
     rpn_cls_prob = rpn_cls_prob_reshape.view_as(rpn_cls_score).permute(0, 2, 3, 1) # batch * h * w * (num_anchors * 2)
@@ -249,20 +247,16 @@ class Network(nn.Module):
 
     rpn_bbox_pred = self.rpn_bbox_pred_net(rpn)
     rpn_bbox_pred = rpn_bbox_pred.permute(0, 2, 3, 1).contiguous()  # batch * h * w * (num_anchors*4)
-    #print(self._mode)
 
     if self._mode == 'TRAIN':
       # produce targets and labels first
       rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred) # rois, roi_scores are varible
-      #print('train 0:', rois.size())
       rpn_labels = self._anchor_target_layer(rpn_cls_score)
       # generate proposals (like testing time)
       rois, _ = self._proposal_target_layer(rois, roi_scores)
-      #print('train 1:', rois.size())
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred)
-        #print('test 0:', rois.size())
       elif cfg.TEST.MODE == 'top':
         rois, _ = self._proposal_top_layer(rpn_cls_prob, rpn_bbox_pred)
       else:
@@ -283,17 +277,6 @@ class Network(nn.Module):
     cls_pred = torch.max(cls_score, 1)[1]
     cls_prob = F.softmax(cls_score, 1)
     
-    #cls_score_1 = cls_score.data.cpu().numpy()
-    #cls_prob_1 = cls_prob.data.cpu().numpy()
-    #print('cls_score:', cls_score.size(), 'cls_pred:', cls_pred.size(), 'cls_prob:', cls_prob.size())
-    #print(np.where(cls_score_1 == np.max(cls_score_1[:,1:])), np.where(cls_prob_1 == np.max(cls_prob_1[:,1:])))
-    
-    # training:
-    #cls_score: (256L, 81L) cls_pred: (256L,) cls_prob: (256L, 81L)
-    
-    # testing:
-    #cls_score: (300L, 81L) cls_pred: (300L,) cls_prob: (300L, 81L)
-    #cls_score: (234L, 81L) cls_pred: (234L,) cls_prob: (234L, 81L)
     bbox_pred = self.bbox_pred_net(fc7)
 
     self._predictions['cls_score'] = cls_score
@@ -449,7 +432,7 @@ class Network(nn.Module):
     """
     summaries = []
     # Add image gt
-    summaries.append(self._add_gt_image_summary()) ####
+    summaries.append(self._add_gt_image_summary())
     # Add event_summaries
     for key, var in self._event_summaries.items():
       summaries.append(tb.summary.scalar(key, var.data[0]))
@@ -487,120 +470,70 @@ class Network(nn.Module):
     # expression encoding
     context, hidden, embedded = self.rnn_encoder(self._labels)
     
-    #print('context:', torch.min(context).data.cpu().numpy(), torch.max(context).data.cpu().numpy())
-    #print('hidden:', torch.min(hidden).data.cpu().numpy(), torch.max(hidden).data.cpu().numpy())
-    #print('embedded:', torch.min(embedded).data.cpu().numpy(), torch.max(embedded).data.cpu().numpy())
-    #print('self._labels:', self._labels.size(), 'context:', context.size(), 'hidden:', hidden.size(), 'embedded:', embedded.size())
-    #self._labels: (3L, 5L) context: (3L, 5L, 1024L) hidden: (3L, 1024L) embedded: (3L, 5L, 512L)
-    
-    #context: [-0.35823184] [ 0.47311622]
-    #hidden: [-0.3290537] [ 0.36991507]
-    #embedded: [ 0.] [ 2.86150503]
-    
     # dynamic filter
     #hidden = torch.mean(hidden, 0, True) ##### need to change
     dynamic_filter_0 = F.tanh(self.dynamic_fc_0(hidden)) # change activation function?
-    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_1 = F.tanh(self.dynamic_fc_1(hidden))
-    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_2 = F.tanh(self.dynamic_fc_2(hidden))
-    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_3 = F.tanh(self.dynamic_fc_3(hidden))
-    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_4 = F.tanh(self.dynamic_fc_4(hidden))
-    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_5 = F.tanh(self.dynamic_fc_5(hidden))
-    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_6 = F.tanh(self.dynamic_fc_6(hidden))
-    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1)
     
     response_filter = F.tanh(self.response_fc(hidden))
-    response_filter = response_filter.view(self._batch_size, -1, 1, 1) ####
+    response_filter = response_filter.view(self._batch_size, -1, 1, 1)
     
-    #print('self._batch_size:', self._batch_size)
-    #print('net_conv:', net_conv.size())
-    #print('dynamic_filter:', dynamic_filter.size())
-    #print('dynamic_filter:', torch.min(dynamic_filter).data.cpu().numpy(), torch.max(dynamic_filter).data.cpu().numpy())
-    #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
-    #print('response_filter:', response_filter.size())
-    
-    #first = 1
-    #for batch in range(self._batch_size):
-    #  if first:
-    #    response = F.conv2d(net_conv[batch:batch+1, :, :, :], dynamic_filter[batch:batch+1, :, :, :])
-    #    first = 0
-    #  else:
-    #    response = torch.cat((response, F.conv2d(net_conv[batch:batch+1, :, :, :], dynamic_filter[batch:batch+1, :, :, :])), 0)
-    
-    response_0 = F.conv2d(net_conv, dynamic_filter_0) ####
+    response_0 = F.conv2d(net_conv, dynamic_filter_0)
     
     mask_1 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_1[:, :, :int(mask_1.size(2)/2), :] = 1
     net_conv_1 = net_conv * mask_1
-    response_1 = F.conv2d(net_conv_1, dynamic_filter_1) ####
+    response_1 = F.conv2d(net_conv_1, dynamic_filter_1)
     
     mask_2 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_2[:, :, int(mask_2.size(2)/2):, :] = 1
     net_conv_2 = net_conv * mask_2
-    response_2 = F.conv2d(net_conv_2, dynamic_filter_2) ####
+    response_2 = F.conv2d(net_conv_2, dynamic_filter_2)
     
     mask_3 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_3[:, :, :, :int(mask_3.size(3)/2)] = 1
     net_conv_3 = net_conv * mask_3
-    response_3 = F.conv2d(net_conv_3, dynamic_filter_3) ####
+    response_3 = F.conv2d(net_conv_3, dynamic_filter_3)
     
     mask_4 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_4[:, :, :, int(mask_4.size(3)/2):] = 1
     net_conv_4 = net_conv * mask_4
-    response_4 = F.conv2d(net_conv_4, dynamic_filter_4) ####
+    response_4 = F.conv2d(net_conv_4, dynamic_filter_4)
     
     mask_5 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_5[:, :, int(mask_5.size(2)/4):int(mask_5.size(2)*3/4), :] = 1
     net_conv_5 = net_conv * mask_5
-    response_5 = F.conv2d(net_conv_5, dynamic_filter_5) ####
+    response_5 = F.conv2d(net_conv_5, dynamic_filter_5)
     
     mask_6 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_6[:, :, :, int(mask_6.size(3)/4):int(mask_6.size(3)*3/4)] = 1
     net_conv_6 = net_conv * mask_6
-    response_6 = F.conv2d(net_conv_6, dynamic_filter_6) ####
+    response_6 = F.conv2d(net_conv_6, dynamic_filter_6)
     
     response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
-    response = F.conv2d(response, response_filter) ####
-    #response = F.sigmoid(F.conv2d(response, response_filter)) ####
+    response = F.conv2d(response, response_filter)
+    #response = F.sigmoid(F.conv2d(response, response_filter))
     net_conv = net_conv * response #### domain of net_conv need to be positive?
     
-    #print('mask_1:', mask_1)
-    #print('mask_2:', mask_2)
-    #print('mask_3:', mask_3)
-    #print('mask_4:', mask_4)
-    
-    #print('response_0:', response_0.size())
-    #print('response_1:', response_1.size())
-    #print('response_2:', response_2.size())
-    #print('response_3:', response_3.size())
-    #print('response_4:', response_4.size())
-    
-    #print('response:', response.size())
-    #print('net_conv:', net_conv.size())
-    
-    #print('net_conv:', net_conv.size())
-    #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
-    
-    #dynamic_filter: [-0.18204966] [ 0.16569006]
-    #net_conv: ------- [ 0.] [ 34.97955704]
-    #net_conv: +++++++ [-214.2396698] [ 114.53372192]
-    
-    #print('response:', response.size(), 'net_conv:', net_conv.size())
-    #response: (1L, 1L, 38L, 57L) net_conv: (1L, 1024L, 38L, 57L)
-    
     if save:
-      #print(torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy(), '-------------')
       response_n = (response - torch.min(response)) / (torch.max(response) - torch.min(response))
       response_n = response_n.data.cpu().numpy()
       response_n = np.squeeze(response_n, axis=(0, 1))
@@ -612,7 +545,7 @@ class Network(nn.Module):
       im.save('{}/{}_{}.png'.format(im_dir, self._file_name[:-4], self._sent_id))
     
     if 0: #save:
-      print(torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), '-------------')
+      print(torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy())
       channel = torch.sum(net_conv, 3)
       channel = torch.sum(channel, 2)
       print(channel)
@@ -625,10 +558,9 @@ class Network(nn.Module):
         channel[:, max_idx] = 0
         max_idxs += [max_idx]
       
-      print(max_idxs, '++++')
+      print(max_idxs)
       
       for ch in max_idxs:
-        #print(ch)
         net_conv_n = (net_conv[:, ch:ch+1, :, :] - torch.min(net_conv[:, ch:ch+1, :, :])) / (torch.max(net_conv[:, ch:ch+1, :, :]) - torch.min(net_conv[:, ch:ch+1, :, :]))
         net_conv_n = net_conv_n.data.cpu().numpy()
         net_conv_n = np.squeeze(net_conv_n, axis=(0, 1))
@@ -654,9 +586,6 @@ class Network(nn.Module):
     if self._mode == 'TRAIN':
       torch.backends.cudnn.benchmark = True # benchmark because now the input size are fixed
     
-    #print('rois:', rois.size(), 'pool5:', pool5.size())
-    #rois: (256L, 5L) pool5: (256L, 1024L, 7L, 7L)
-    
     spatial_fc7 = self._head_to_tail(pool5)  # (num_rois, 2048, 7, 7)
     cls_prob, bbox_pred = self._region_classification(spatial_fc7)
     
@@ -673,8 +602,6 @@ class Network(nn.Module):
     for k in self._predictions.keys():
       self._score_summaries[k] = self._predictions[k]
     
-    #print('net_conv:', net_conv.size(), 'rois:', rois.size(), 'cls_prob:', cls_prob.size(), 'bbox_pred:', bbox_pred.size(), 'mask_prob:', mask_prob.size())
-    #net_conv: (1L, 1024L, 38L, 57L) rois: (256L, 5L) cls_prob: (256L, 81L) bbox_pred: (256L, 324L) mask_prob: (8L, 81L, 14L, 14L)
     return net_conv, rois, cls_prob, bbox_pred, mask_prob
 
   def _predict_masks_from_boxes_and_labels(self, net_conv, boxes, labels):
@@ -719,38 +646,6 @@ class Network(nn.Module):
     self._image_gt_summaries['gt_boxes'] = gt_boxes
     self._image_gt_summaries['im_info'] = im_info
     
-    #print('--------forward--------')
-    #print('image:', np.min(image), np.max(image), image.shape)
-    #print('im_info:', im_info, im_info.shape)
-    #print('gt_boxes:')
-    #print(gt_boxes, gt_boxes.shape)
-    #print('gt_masks:', np.unique(gt_masks), gt_masks.shape)
-    #print('labels:', labels, labels.shape)
-    
-    #print('file_name:', file_name)
-    #print('------')
-    
-    # original mrcn
-    #image: -122.772 152.02, shape: (1, 600, 904, 3)
-    #im_info: [[ 600. 904. 1.80722892]], shape: (1, 3)
-    #gt_boxes:
-    #[[ 504.21685791  370.48193359  646.98797607  428.31326294   65. ]
-    # [ 213.25300598  368.67471313  540.3614502   404.8192749    67. ]], shape: (2, 5)
-    #gt_masks: {0 1}, shape: (2, 600, 904)
-    
-    # one image-sentence pair for a batch
-    # image: -122.772 ~ 152.02, shape: (1, 600, 906, 3) PIXEL_MEANS = np.array([[[102.9801, 115.9465, 122.7717]]])
-    # im_info: [[ 600. 906. 1.41509438]], shape: (1, 3) shorter border length: 600, longer border length < 1000
-    # gt_boxes: (n, 5), [x1, y1, x2, y2, cls] ####
-    # [[ 645.07073975  327.65093994  890.98583984  532.20281982   57. ]], shape: (1, 5)
-    # gt_masks: {0, 1} (n, scaled_height, scaled_width) (1, 600, 906)
-    # labels: (1L, 3L)
-    # Variable containing:
-    # 118  109  1803
-    # [torch.cuda.LongTensor of size 1x3 (GPU 0)]
-    
-    # COCO_train2014_000000098304.jpg, original shape: (424, 640)
-
     self._image = Variable(torch.from_numpy(image.transpose([0,3,1,2])).cuda(), volatile=mode == 'TEST')
     self._im_info = im_info # No need to change; actually it can be a list
     self._gt_boxes = Variable(torch.from_numpy(gt_boxes).cuda()) if gt_boxes is not None else None
@@ -765,26 +660,8 @@ class Network(nn.Module):
     self._mode = mode
     self._sent_id = sent_id
 
-    #net_conv, rois, cls_prob, bbox_pred, mask_prob = self._predict(dynamic_filter)
     net_conv, rois, cls_prob, bbox_pred, mask_prob = self._predict(save)
     
-    #recovered_masks = recover_cls_masks(mask_prob.data.cpu().numpy(), rois[:mask_prob.size(0),:-1].data.cpu().numpy(), int(im_info[0,0]), int(im_info[0,1]))
-    #recovered_masks = recovered_masks[0,int(gt_boxes[0,-1]),:,:]
-    #print(recovered_masks.shape, int(gt_boxes[0,-1]), np.argmax(cls_prob[0,1:].data.cpu().numpy())+1, '----------------')
-    
-    #if save:
-    #  recovered_masks = recover_cls_masks(mask_prob.data.cpu().numpy(), rois[:mask_prob.size(0),:-1].data.cpu().numpy(), int(im_info[0,0]), int(im_info[0,1]))
-    #  recovered_masks = recovered_masks[0,np.argmax(cls_prob[0,1:].data.cpu().numpy())+1,:,:]
-    #  print(recovered_masks.shape, int(gt_boxes[0,-1]), np.argmax(cls_prob[0,1:].data.cpu().numpy())+1, '----------------')
-    #  
-    #  recovered_masks = (recovered_masks - np.min(recovered_masks)) / (np.max(recovered_masks) - np.min(recovered_masks))
-    #  
-    #  im = Image.fromarray((recovered_masks*255).astype(np.uint8), mode='P')
-    #  im_dir = 'output_mask'
-    #  if not os.path.exists(im_dir):
-    #    os.makedirs(im_dir)
-    #  im.save('{}/{}_m.png'.format(im_dir, self._file_name[:-4]))
-
     self._predictions['net_conv'] = net_conv
 
     if mode == 'TEST':   

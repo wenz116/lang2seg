@@ -13,7 +13,7 @@ TAG="notime"
 NET="res101"
 ID="mrcn_cmr_with_st"
 
-STEPSIZE="[360000]" ####
+STEPSIZE="[360000]"
 ANCHORS="[4,8,16,32]"
 RATIOS="[0.5,1,2]"
 

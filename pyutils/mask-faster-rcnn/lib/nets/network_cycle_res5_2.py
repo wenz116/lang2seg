@@ -241,7 +241,6 @@ class Network(nn.Module):
     # change it so that the score has 2 as its channel size
     rpn_cls_score_reshape = rpn_cls_score.view(self._batch_size, 2, -1, rpn_cls_score.size()[-1]) # batch * 2 * (num_anchors*h) * w
     rpn_cls_prob_reshape = F.softmax(rpn_cls_score_reshape, 1)  # batch * 2 * (num_anchors*h) * w
-    #rpn_cls_score_reshape: (1L, 2L, 456L, 50L) rpn_cls_prob_reshape: (1L, 2L, 456L, 50L)
     
     # Move channel to the last dimenstion, to fit the input of python functions
     rpn_cls_prob = rpn_cls_prob_reshape.view_as(rpn_cls_score).permute(0, 2, 3, 1) # batch * h * w * (num_anchors * 2)
@@ -255,11 +254,9 @@ class Network(nn.Module):
     if self._mode == 'TRAIN':
       # produce targets and labels first
       rois, roi_scores = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred) # rois, roi_scores are varible
-      #print('rois 0:', rois) # (1950L, 5L) (1416L, 5L) (2000L, 5L)
       rpn_labels = self._anchor_target_layer(rpn_cls_score)
       # generate proposals (like testing time)
       rois, _ = self._proposal_target_layer(rois, roi_scores)
-      #print('rois 1:', rois) # (256L, 5L)
     else:
       if cfg.TEST.MODE == 'nms':
         rois, _ = self._proposal_layer(rpn_cls_prob, rpn_bbox_pred)
@@ -421,48 +418,21 @@ class Network(nn.Module):
     fc_feats_all = feats_all.mean(3).mean(2)
     att_feats_all = F.adaptive_avg_pool2d(feats_all, [14,14]).permute(0, 2, 3, 1).contiguous()
     
-    #print('feats_all:', feats_all.size()) # (1L, 1024L, 38L, 50L)
-    #print('fc_feats_all:', fc_feats_all.size()) # (1L, 1024L)
-    #print('att_feats_all:', att_feats_all.size()) # (1L, 14L, 14L, 1024L)
-    
-    #print('self._gt_masks 0:', self._gt_masks.shape)
-    
     tmp = [self._gt_masks, self._cap_labels, self._cap_masks]
     tmp = [Variable(torch.from_numpy(_), requires_grad=False).cuda() for _ in tmp]
     gt_masks, cap_labels, cap_masks = tmp
     gt_masks = gt_masks.unsqueeze(1).float()
-    #print('gt_masks 0:', gt_masks.size())
     
-    #print('gt_masks 0:', gt_masks.size(), [feats_all.size(2), feats_all.size(3)]) # (1, 600, 800)
     gt_masks = F.adaptive_avg_pool2d(gt_masks,[feats_all.size(2),feats_all.size(3)])
     gt_masks[gt_masks<0.5] = 0
     gt_masks[gt_masks>=0.5] = 1
-    
-    #print('gt_masks 1:', gt_masks.size())
     
     feats_mask = feats_all * gt_masks
     fc_feats_mask = feats_mask.mean(3).mean(2)
     att_feats_mask = F.adaptive_avg_pool2d(feats_mask, [14,14]).permute(0, 2, 3, 1)
     
-    #print('feats_all.requires_grad:', feats_all.requires_grad) # True
-    #print('feats_mask.requires_grad:', feats_mask.requires_grad) # True
-    #print('fc_feats_mask.requires_grad:', fc_feats_mask.requires_grad) # True
-    #print('att_feats_mask.requires_grad:', att_feats_mask.requires_grad) # True
-    
-    #print('feats_mask:', feats_mask.size()) # (1L, 1024L, 38L, 50L)
-    #print('fc_feats_mask:', fc_feats_mask.size()) # (1L, 1024L)
-    #print('att_feats_mask:', att_feats_mask.size()) # (1L, 14L, 14L, 1024L)
-    
     fc_feats = torch.cat((fc_feats_all, fc_feats_mask), 1)
     att_feats = torch.cat((att_feats_all, att_feats_mask), 3)
-    
-    #print('---------')
-    #print('fc_feats:', fc_feats.size()) # (1L, 2048L)
-    #print('att_feats:', att_feats.size()) # (1L, 14L, 14L, 2048L)
-    #print('cap_labels:', cap_labels)#.size()) # (1L, 7L) (1L, 5L)
-    #print('cap_masks:', cap_masks)#.size()) # (1L, 7L) (1L, 5L)
-    #print('bounds:', data['bounds']) # {'wrapped': False, 'it_pos_now': 10, 'it_max': 113287}
-    #print('output:', self.caption_model(fc_feats, att_feats, cap_labels))#.size()) # (1L, 4L, 2000L) (1L, 3L, 2000L)
     
     crit = utils.LanguageModelCriterion()
     
@@ -530,110 +500,66 @@ class Network(nn.Module):
     # expression encoding
     context, hidden, embedded = self.rnn_encoder(self._labels)
     
-    #print('context:', torch.min(context).data.cpu().numpy(), torch.max(context).data.cpu().numpy())
-    #print('hidden:', torch.min(hidden).data.cpu().numpy(), torch.max(hidden).data.cpu().numpy())
-    #print('embedded:', torch.min(embedded).data.cpu().numpy(), torch.max(embedded).data.cpu().numpy())
-    #print('self._labels:', self._labels.size(), 'context:', context.size(), 'hidden:', hidden.size(), 'embedded:', embedded.size())
-    #self._labels: (3L, 5L) context: (3L, 5L, 1024L) hidden: (3L, 1024L) embedded: (3L, 5L, 512L)
-    
-    #context: [-0.35823184] [ 0.47311622]
-    #hidden: [-0.3290537] [ 0.36991507]
-    #embedded: [ 0.] [ 2.86150503]
-    
     # dynamic filter
     dynamic_filter_0 = F.tanh(self.dynamic_fc_0(hidden)) # change activation function?
-    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_0 = dynamic_filter_0.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_1 = F.tanh(self.dynamic_fc_1(hidden))
-    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_1 = dynamic_filter_1.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_2 = F.tanh(self.dynamic_fc_2(hidden))
-    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_2 = dynamic_filter_2.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_3 = F.tanh(self.dynamic_fc_3(hidden))
-    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_3 = dynamic_filter_3.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_4 = F.tanh(self.dynamic_fc_4(hidden))
-    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_4 = dynamic_filter_4.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_5 = F.tanh(self.dynamic_fc_5(hidden))
-    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_5 = dynamic_filter_5.view(self._batch_size, -1, 1, 1)
     
     dynamic_filter_6 = F.tanh(self.dynamic_fc_6(hidden))
-    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1) ####
+    dynamic_filter_6 = dynamic_filter_6.view(self._batch_size, -1, 1, 1)
     
     response_filter = F.tanh(self.response_fc(hidden))
-    response_filter = response_filter.view(self._batch_size, -1, 1, 1) ####
+    response_filter = response_filter.view(self._batch_size, -1, 1, 1)
     
-    #print('self._batch_size:', self._batch_size)
-    #print('net_conv:', net_conv.size())
-    #print('dynamic_filter:', dynamic_filter.size())
-    #print('-----------')
-    #print('dynamic_filter_0:', torch.min(dynamic_filter_0).data.cpu().numpy(), torch.max(dynamic_filter_0).data.cpu().numpy())
-    #print('dynamic_filter_1:', torch.min(dynamic_filter_1).data.cpu().numpy(), torch.max(dynamic_filter_1).data.cpu().numpy())
-    #print('dynamic_filter_2:', torch.min(dynamic_filter_2).data.cpu().numpy(), torch.max(dynamic_filter_2).data.cpu().numpy())
-    #print('dynamic_filter_3:', torch.min(dynamic_filter_3).data.cpu().numpy(), torch.max(dynamic_filter_3).data.cpu().numpy())
-    #print('dynamic_filter_4:', torch.min(dynamic_filter_4).data.cpu().numpy(), torch.max(dynamic_filter_4).data.cpu().numpy())
-    #print('dynamic_filter_5:', torch.min(dynamic_filter_5).data.cpu().numpy(), torch.max(dynamic_filter_5).data.cpu().numpy())
-    #print('dynamic_filter_6:', torch.min(dynamic_filter_6).data.cpu().numpy(), torch.max(dynamic_filter_6).data.cpu().numpy())
-    #print('net_conv: -------', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), torch.mean(net_conv).data.cpu().numpy())
-    #print('response_filter:', response_filter.size())
-    
-    response_0 = F.conv2d(net_conv, dynamic_filter_0) ####
+    response_0 = F.conv2d(net_conv, dynamic_filter_0)
     
     mask_1 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_1[:, :, :int(mask_1.size(2)/2), :] = 1
     net_conv_1 = net_conv * mask_1
-    response_1 = F.conv2d(net_conv_1, dynamic_filter_1) ####
+    response_1 = F.conv2d(net_conv_1, dynamic_filter_1)
     
     mask_2 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_2[:, :, int(mask_2.size(2)/2):, :] = 1
     net_conv_2 = net_conv * mask_2
-    response_2 = F.conv2d(net_conv_2, dynamic_filter_2) ####
+    response_2 = F.conv2d(net_conv_2, dynamic_filter_2)
     
     mask_3 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_3[:, :, :, :int(mask_3.size(3)/2)] = 1
     net_conv_3 = net_conv * mask_3
-    response_3 = F.conv2d(net_conv_3, dynamic_filter_3) ####
+    response_3 = F.conv2d(net_conv_3, dynamic_filter_3)
     
     mask_4 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_4[:, :, :, int(mask_4.size(3)/2):] = 1
     net_conv_4 = net_conv * mask_4
-    response_4 = F.conv2d(net_conv_4, dynamic_filter_4) ####
+    response_4 = F.conv2d(net_conv_4, dynamic_filter_4)
     
     mask_5 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_5[:, :, int(mask_5.size(2)/4):int(mask_5.size(2)*3/4), :] = 1
     net_conv_5 = net_conv * mask_5
-    response_5 = F.conv2d(net_conv_5, dynamic_filter_5) ####
+    response_5 = F.conv2d(net_conv_5, dynamic_filter_5)
     
     mask_6 = Variable(torch.zeros(1, 1, net_conv.size(2), net_conv.size(3)).cuda())
     mask_6[:, :, :, int(mask_6.size(3)/4):int(mask_6.size(3)*3/4)] = 1
     net_conv_6 = net_conv * mask_6
-    response_6 = F.conv2d(net_conv_6, dynamic_filter_6) ####
-    
-    #print('response_0:', response_0.size(), torch.min(response_0).data.cpu().numpy(), torch.max(response_0).data.cpu().numpy())
-    #print('response_1:', response_1.size(), torch.min(response_1).data.cpu().numpy(), torch.max(response_1).data.cpu().numpy())
-    #print('response_2:', response_2.size(), torch.min(response_2).data.cpu().numpy(), torch.max(response_2).data.cpu().numpy())
-    #print('response_3:', response_3.size(), torch.min(response_3).data.cpu().numpy(), torch.max(response_3).data.cpu().numpy())
-    #print('response_4:', response_4.size(), torch.min(response_4).data.cpu().numpy(), torch.max(response_4).data.cpu().numpy())
-    #print('response_5:', response_5.size(), torch.min(response_5).data.cpu().numpy(), torch.max(response_5).data.cpu().numpy())
-    #print('response_6:', response_6.size(), torch.min(response_6).data.cpu().numpy(), torch.max(response_6).data.cpu().numpy())
+    response_6 = F.conv2d(net_conv_6, dynamic_filter_6)
     
     response = torch.cat((response_0, response_1, response_2, response_3, response_4, response_5, response_6), 1)
-    #print('response -:', response.size(), torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy())
     response = F.conv2d(response, response_filter)
     net_conv = net_conv * response #### domain of net_conv need to be positive?
-    
-    #print('response +:', response.size(), torch.min(response).data.cpu().numpy(), torch.max(response).data.cpu().numpy())
-    
-    #print('net_conv: +++++++', torch.min(net_conv).data.cpu().numpy(), torch.max(net_conv).data.cpu().numpy(), torch.mean(net_conv).data.cpu().numpy())
-    
-    #dynamic_filter: [-0.18204966] [ 0.16569006]
-    #net_conv: ------- [ 0.] [ 34.97955704]
-    #net_conv: +++++++ [-214.2396698] [ 114.53372192]
-    
-    #print('response:', response.size(), 'net_conv:', net_conv.size())
-    #response: (1L, 1L, 38L, 57L) net_conv: (1L, 1024L, 38L, 57L)
     
     # build the anchors for the image
     self._anchor_component(net_conv.size(2), net_conv.size(3))
@@ -650,27 +576,20 @@ class Network(nn.Module):
     if self._mode == 'TRAIN':
       torch.backends.cudnn.benchmark = True # benchmark because now the input size are fixed
     
-    #print('rois:', rois.size(), 'pool5:', pool5.size())
-    #rois: (256L, 5L) pool5: (256L, 1024L, 7L, 7L)
-    
     spatial_fc7 = self._head_to_tail(pool5)  # (num_rois, 2048, 7, 7)
     cls_prob, bbox_pred = self._region_classification(spatial_fc7)
-    #print('spatial_fc7 0:', spatial_fc7.size()) #(256L, 2048L, 7L, 7L)
 
     if self._mode == 'TRAIN':
       # we only run mask prediction on foreground regions
       num_fg = self._proposal_targets['mask_targets'].size(0) #### about 1~40 (set to 1?)
       spatial_fc7 = spatial_fc7[:num_fg] #### in proposal_target_layer.py: keep_inds = torch.cat([fg_inds, bg_inds], 0)
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_fg, num_classes, 14, 14)
-      #print('spatial_fc7 1:', spatial_fc7.size()) #(8L, 2048L, 7L, 7L)
     else:
       mask_prob = self._mask_prediction(spatial_fc7)  # (num_rois, num_classes, 14, 14)
     
     for k in self._predictions.keys():
       self._score_summaries[k] = self._predictions[k]
     
-    #print('net_conv:', net_conv.size(), 'rois:', rois.size(), 'cls_prob:', cls_prob.size(), 'bbox_pred:', bbox_pred.size(), 'mask_prob:', mask_prob.size())
-    #net_conv: (1L, 1024L, 38L, 57L) rois: (256L, 5L) cls_prob: (256L, 81L) bbox_pred: (256L, 324L) mask_prob: (8L, 81L, 14L, 14L)
     return net_conv, rois, cls_prob, bbox_pred, mask_prob
 
   def _predict_masks_from_boxes_and_labels(self, net_conv, boxes, labels):
@@ -714,38 +633,6 @@ class Network(nn.Module):
     self._image_gt_summaries['gt_boxes'] = gt_boxes
     self._image_gt_summaries['im_info'] = im_info
     
-    #print('--------forward--------')
-    #print('image:', np.min(image), np.max(image), image.shape)
-    #print('im_info:', im_info, im_info.shape)
-    #print('gt_boxes:')
-    #print(gt_boxes, gt_boxes.shape)
-    #print('gt_masks:', np.unique(gt_masks), gt_masks.shape)
-    #print('labels:', labels, labels.shape)
-    
-    #print('file_name:', file_name)
-    #print('------')
-    
-    # original mrcn
-    #image: -122.772 152.02, shape: (1, 600, 904, 3)
-    #im_info: [[ 600. 904. 1.80722892]], shape: (1, 3)
-    #gt_boxes:
-    #[[ 504.21685791  370.48193359  646.98797607  428.31326294   65. ]
-    # [ 213.25300598  368.67471313  540.3614502   404.8192749    67. ]], shape: (2, 5)
-    #gt_masks: {0 1}, shape: (2, 600, 904)
-    
-    # one image-sentence pair for a batch
-    # image: -122.772 ~ 152.02, shape: (1, 600, 906, 3) PIXEL_MEANS = np.array([[[102.9801, 115.9465, 122.7717]]])
-    # im_info: [[ 600. 906. 1.41509438]], shape: (1, 3) shorter border length: 600, longer border length < 1000
-    # gt_boxes: (n, 5), [x1, y1, x2, y2, cls] ####
-    # [[ 645.07073975  327.65093994  890.98583984  532.20281982   57. ]], shape: (1, 5)
-    # gt_masks: {0, 1} (n, scaled_height, scaled_width) (1, 600, 906)
-    # labels: (1L, 3L)
-    # Variable containing:
-    # 118  109  1803
-    # [torch.cuda.LongTensor of size 1x3 (GPU 0)]
-    
-    # COCO_train2014_000000098304.jpg, original shape: (424, 640)
-
     self._image = Variable(torch.from_numpy(image.transpose([0,3,1,2])).cuda(), volatile=mode == 'TEST')
     self._im_info = im_info # No need to change; actually it can be a list
     self._gt_boxes = Variable(torch.from_numpy(gt_boxes).cuda()) if gt_boxes is not None else None
