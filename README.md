@@ -10,7 +10,7 @@ Contact: Yi-Wen Chen (chenyiwena at gmail dot com)
 
 ## Paper
 
-[Referring Expression Object Segmentation with Caption-Aware Consistency](https://bmvc2019.org/wp-content/uploads/papers/0196-paper.pdf) <br />
+[Referring Expression Object Segmentation with Caption-Aware Consistency](https://arxiv.org/abs/1910.04748) <br />
 [Yi-Wen Chen](https://wenz116.github.io/), [Yi-Hsuan Tsai](https://sites.google.com/site/yihsuantsai/home), [Tiantian Wang](https://tiantianwang.github.io), [Yen-Yu Lin](https://www.citi.sinica.edu.tw/pages/yylin/) and [Ming-Hsuan Yang](http://faculty.ucmerced.edu/mhyang/index.html) <br />
 *British Machine Vision Conference (BMVC)*, 2019 <br />
 
@@ -18,7 +18,7 @@ Please cite our paper if you find it useful for your research.
 
 ```
 @inproceedings{Chen_lang2seg_2019,
-  author = {Y.-W. Chen and Y.-H. Tsai and T. Wang and Y.-Y. Lin and M.-H. Yang},
+  author = {Yi-Wen Chen and Yi-Hsuan Tsai and Tiantian Wang and Yen-Yu Lin and Ming-Hsuan Yang},
   booktitle = {British Machine Vision Conference (BMVC)},
   title = {Referring Expression Object Segmentation with Caption-Aware Consistency},
   year = {2019}
